@@ -18,7 +18,7 @@ _PharmacistRegisterRequest _$PharmacistRegisterRequestFromJson(
   email: json['email'] as String,
   licenseNumber: json['licenseNumber'] as String,
   pharmacyName: json['pharmacyName'] as String,
-  licenseDocumentUrl: json['licenseDocumentUrl'] as String,
+  licenseDocument: json['licenseDocument'] as String,
 );
 
 Map<String, dynamic> _$PharmacistRegisterRequestToJson(
@@ -33,5 +33,5 @@ Map<String, dynamic> _$PharmacistRegisterRequestToJson(
   'email': instance.email,
   'licenseNumber': instance.licenseNumber,
   'pharmacyName': instance.pharmacyName,
-  'licenseDocumentUrl': instance.licenseDocumentUrl,
+  'licenseDocument': instance.licenseDocument,
 };

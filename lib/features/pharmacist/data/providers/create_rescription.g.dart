@@ -101,7 +101,7 @@ final class PrescriptionFormProvider
   }
 }
 
-String _$prescriptionFormHash() => r'dcb604ba1beb7f07161e7802bf3fce928b4de4dd';
+String _$prescriptionFormHash() => r'640c6befff75d31d6cec2a30234c87ec450a372b';
 
 final class PrescriptionFormFamily extends $Family
     with

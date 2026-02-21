@@ -71,9 +71,10 @@ class LoginForm extends StatelessWidget {
             if (value == null || value.isEmpty) {
               return 'Please enter phone number';
             }
-            if (!RegExp(r'^[0-9]{14}$').hasMatch(value)) {
-              return 'Please enter a valid 14-digit number';
-            }
+            // if(value)
+            // if (!RegExp(r'^[0-9]{14}$').hasMatch(value)) {
+            //   return 'Please enter a valid 14-digit number';
+            // }
             return null;
           },
         ),

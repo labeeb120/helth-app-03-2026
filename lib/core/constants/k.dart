@@ -58,13 +58,14 @@ enum UserType {
     return false;
   }
 }
-const api='192.168.1.106';
+
+const api = '192.168.1.101';
+
 class K {
   // TODO Change this Url
-  static const String baseUrl = "https://$api:7164/api";
+  static const String baseUrl = "http://$api:5137/api";
 
-
-  // 
+  //
   static const String loginUrl = "/auth/login";
   static const String registerUrl = "/auth/register";
 }

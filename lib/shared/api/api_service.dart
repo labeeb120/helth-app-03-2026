@@ -1,13 +1,17 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:health_app/shared/api/dio_factory.dart';
 // import 'package:dio/io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 class ApiService {
-  final Dio _dio;
+  Dio get _dio => factory.getDio();
+  Dio get _gDio => factory.getDio(geust: true);
+  final DioFactory factory;
 
-  ApiService({required Dio dio}) : _dio = dio;
-
+  ApiService(this.factory);
 
   // Helper method to handle responses
   Map<String, dynamic> _handleResponse(Response response) {
@@ -16,7 +20,7 @@ class ApiService {
     } else {
       return response.data; // This returns the JSON Map
       // if () {
-        
+
       // }
       // xlog(response.data['']);
       // throw Exception('Server Error: ${response.statusCode}');
@@ -27,30 +31,97 @@ class ApiService {
   // AUTHENTICATION
   // ===============================================================
 
-  Future<Map<String, dynamic>> registerPatient(Map<String, dynamic> data) async {
-    final response = await _dio.post('/Auth/register/patient', data: data);
+  Future<Map<String, dynamic>> registerPatient(
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _gDio.post('/Auth/register/patient', data: data);
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> registerDoctor(Map<String, dynamic> data) async {
-    final response = await _dio.post('/Auth/register/doctor', data: data);
+    final response = await _gDio.post('/Auth/register/doctor', data: data);
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> registerPharmacist(Map<String, dynamic> data) async {
-    final response = await _dio.post('/Auth/register/pharmacist', data: data);
+  // Future<http.Response> uploadFileWithHttp({
+  //   required File file,
+  //   required PharmacistRegisterRequest data,
+  //   required String apiUrl,
+  // }) async {
+  //   try {
+  //     // Create a multipart request
+  //     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+
+  //     // Get clean filename
+  //     String fileName = path.basename(file.path);
+
+  //     // Add file to the request
+  //     request.files.add(
+  //       await http.MultipartFile.fromPath(
+  //         'licenseDocument', // Field name
+  //         file.path,
+  //         filename: fileName, // Clean filename
+  //       ),
+  //     );
+
+  //     // Add other form fields
+  //     request.fields.addAll({
+  //       'nationalId': data.nationalId,
+  //       'password': data.password,
+  //       'confirmPassword': data.confirmPassword,
+  //       'fullName': data.fullName,
+  //       'dateOfBirth': data.dateOfBirth?.toIso8601String() ?? '',
+  //       'phoneNumber': data.phoneNumber,
+  //       'email': data.email,
+  //       'licenseNumber': data.licenseNumber,
+  //       'pharmacyName': data.pharmacyName,
+  //     });
+
+  //     // Add headers
+  //     request.headers.addAll({'Accept': 'application/json', 'language': 'ar'});
+
+  //     // Send the request
+  //     var streamedResponse = await request.send();
+
+  //     // Get the response
+  //     var response = await http.Response.fromStream(streamedResponse);
+
+  //     return response;
+  //   } catch (e) {
+  //     throw Exception('Upload failed: $e');
+  //   }
+  // }
+
+  Future<Map<String, dynamic>> registerPharmacist(FormData data) async {
+    // FormData formData = FormData.fromMap({
+    //   "licenseDocument": await MultipartFile.fromFile(file.path, filename: fileName),
+    //   "user_id": "123", // Additional fields
+    // });
+
+    final response = await _dio.post(
+      '/Auth/register/pharmacist',
+      data: data,
+
+      options: Options(
+        headers: {'Content-Type': 'multipart/form-data'},
+        // Add auth token if needed
+        // 'Authorization': 'Bearer $token',
+      ),
+    );
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> login(String identifier, String password) async {
-    final response = await _dio.post('/Auth/login', data: {
-      "identifier": identifier,
-      "password": password,
-      "deviceToken": "dummy_token_or_fcm", // Update as needed
-      "devicePlatform": Platform.operatingSystem
-    });
+    final response = await _gDio.post(
+      '/Auth/login',
+      data: {
+        "identifier": identifier,
+        "password": password,
+        "deviceToken": "dummy_token_or_fcm", // Update as needed
+        "devicePlatform": Platform.operatingSystem,
+      },
+    );
     // final res = LoginResponse.fromJson(response.data);
-
 
     // if (res.success) {
     //   // Save Token automatically
@@ -83,24 +154,31 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> updateDoctorProfile(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateDoctorProfile(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.put('/Doctor/profile', data: data);
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> searchPatient(String identifier) async {
-    final response = await _dio.post('/Doctor/search-patient', data: {
-      "identifier": identifier
-    });
+    final response = await _dio.post(
+      '/Doctor/search-patient',
+      data: {"identifier": identifier},
+    );
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> addMedicalRecord(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> addMedicalRecord(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.post('/Doctor/medical-record', data: data);
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> addPrescription(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> addPrescription(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.post('/Doctor/AddPrescription', data: data);
     return _handleResponse(response);
   }
@@ -109,7 +187,9 @@ class ApiService {
   // PATIENT
   // ===============================================================
 
-  Future<Map<String, dynamic>> initializePatientProfile(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> initializePatientProfile(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.post('/Patient/initialize-profile', data: data);
     return _handleResponse(response);
   }
@@ -121,14 +201,16 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> updatePatientProfile(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updatePatientProfile(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.put('/Patient/profile', data: data);
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> generateQr() async {
     // Assuming POST since it generates data, empty body if required
-    final response = await _dio.post('/Patient/generate-qr', data: {}); 
+    final response = await _dio.post('/Patient/generate-qr', data: {});
     return _handleResponse(response);
   }
 
@@ -138,12 +220,16 @@ class ApiService {
   }
 
   Future<List<dynamic>> getPatientMedicalRecords() async {
-    final response = await _dio.get('/Patient/medical-records'); // Note: Returns List
-    return response.data; 
+    final response = await _dio.get(
+      '/Patient/medical-records',
+    ); // Note: Returns List
+    return response.data;
   }
 
   Future<List<dynamic>> getPatientPrescriptions() async {
-    final response = await _dio.get('/Patient/prescriptions'); // Note: Returns List
+    final response = await _dio.get(
+      '/Patient/prescriptions',
+    ); // Note: Returns List
     return response.data;
   }
 
@@ -156,39 +242,57 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> updatePharmacistProfile(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updatePharmacistProfile(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.put('/Pharmacist/profile', data: data);
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> searchPrescription(String identifier) async {
-    final response = await _dio.post('/Pharmacist/search-prescription', data: {
-      "identifier": identifier
-    });
+    final response = await _dio.post(
+      '/Pharmacist/search-prescription',
+      data: {"identifier": identifier},
+    );
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> checkDrugInteractions(Map<String, dynamic> data) async {
-    final response = await _dio.post('/Pharmacist/check-drug-interactions', data: data);
+  Future<Map<String, dynamic>> checkDrugInteractions(
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _dio.post(
+      '/Pharmacist/check-drug-interactions',
+      data: data,
+    );
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> dispensePrescription(Map<String, dynamic> data) async {
-    final response = await _dio.post('/Pharmacist/dispense-prescription', data: data);
+  Future<Map<String, dynamic>> dispensePrescription(
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _dio.post(
+      '/Pharmacist/dispense-prescription',
+      data: data,
+    );
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> createPharmacistPrescription(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> createPharmacistPrescription(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.post('/Pharmacist/create', data: data);
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> updatePrescriptionStatus(int id, int status, String notes) async {
-    final response = await _dio.post('/Pharmacist/prescription-status', data: {
-      "prescriptionId": id,
-      "status": status,
-      "notes": notes
-    });
+  Future<Map<String, dynamic>> updatePrescriptionStatus(
+    int id,
+    int status,
+    String notes,
+  ) async {
+    final response = await _dio.post(
+      '/Pharmacist/prescription-status',
+      data: {"prescriptionId": id, "status": status, "notes": notes},
+    );
     return _handleResponse(response);
   }
 
@@ -216,12 +320,16 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> updateUserStatus(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateUserStatus(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.post('/Admin/user-status', data: data);
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> getAuditLogs(Map<String, dynamic> filterData) async {
+  Future<Map<String, dynamic>> getAuditLogs(
+    Map<String, dynamic> filterData,
+  ) async {
     final response = await _dio.post('/Admin/audit-logs', data: filterData);
     return _handleResponse(response);
   }
@@ -231,7 +339,9 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> sendNotification(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> sendNotification(
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.post('/Admin/send-notification', data: data);
     return _handleResponse(response);
   }

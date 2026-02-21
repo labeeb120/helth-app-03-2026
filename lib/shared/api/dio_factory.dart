@@ -21,17 +21,20 @@ class DioFactory {
     String? token = _storage.getUserToken();
 
     // 2. Define Timeouts
-    Duration timeOut = const Duration(minutes: 1); // 60 seconds
+    Duration timeOut = const Duration(minutes: 10); // 60 seconds
 
     // 3. Set Base Options
     Map<String, String> headers = {
       AppHeaders.contentType: AppHeaders.applicationJson,
       AppHeaders.accept: AppHeaders.applicationJson,
-      AppHeaders.authorization: (token != null && !geust)
-          ? "Bearer $token"
-          : "",
+      // AppHeaders.authorization: (token != null && !geust)
+      //     ? "Bearer $token"
+      //     : "",
       AppHeaders.defaultLanguage: language,
     };
+    if (!geust && token != null) {
+      headers.addEntries([MapEntry(AppHeaders.authorization, "Bearer $token")]);
+    }
     // Use 10.0.2.2 for Android Emulator, localhost for iOS Simulator
     // final String _baseUrl = Platform.isAndroid
     //     ? 'http://10.0.2.2:7164/api'

@@ -9,8 +9,8 @@ part of 'prescription.dart';
 PrescriptionsResponse _$PrescriptionsResponseFromJson(
   Map<String, dynamic> json,
 ) => PrescriptionsResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   prescriptions:
       (json['prescriptions'] as List<dynamic>?)
           ?.map((e) => Prescription.fromJson(e as Map<String, dynamic>))

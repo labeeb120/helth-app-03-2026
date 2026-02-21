@@ -1,11 +1,11 @@
 // import 'package:json_annotation/json_annotation.dart';
 abstract class BaseResponse {
-  final bool success;
+  final bool? success;
   final String? message;
   // final List<String>? errors;
 
 
-  BaseResponse({this.success = false, this.message});
+  BaseResponse({this.success = false, this.message=''});
 }
 
 abstract class Profile {

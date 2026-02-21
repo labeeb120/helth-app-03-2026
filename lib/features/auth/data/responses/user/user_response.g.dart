@@ -8,8 +8,8 @@ part of 'user_response.dart';
 
 LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
     LoginResponse(
-      success: json['success'] as bool,
-      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      message: json['message'] as String? ?? '',
       accessToken: json['accessToken'] as String?,
       role: json['role'] as String?,
       userId: (json['userId'] as num?)?.toInt(),
@@ -27,8 +27,8 @@ Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
 PatientRegisterResponse _$PatientRegisterResponseFromJson(
   Map<String, dynamic> json,
 ) => PatientRegisterResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   data: json['data'] == null
       ? null
       : RegisterData.fromJson(json['data'] as Map<String, dynamic>),
@@ -44,8 +44,8 @@ Map<String, dynamic> _$PatientRegisterResponseToJson(
 
 GeneralResponse _$GeneralResponseFromJson(Map<String, dynamic> json) =>
     GeneralResponse(
-      success: json['success'] as bool,
-      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      message: json['message'] as String? ?? '',
     );
 
 Map<String, dynamic> _$GeneralResponseToJson(GeneralResponse instance) =>
@@ -54,8 +54,8 @@ Map<String, dynamic> _$GeneralResponseToJson(GeneralResponse instance) =>
 DoctorProfileResponse _$DoctorProfileResponseFromJson(
   Map<String, dynamic> json,
 ) => DoctorProfileResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   doctor: json['doctor'] == null
       ? null
       : DoctorResponse.fromJson(json['doctor'] as Map<String, dynamic>),
@@ -72,8 +72,8 @@ Map<String, dynamic> _$DoctorProfileResponseToJson(
 SearchPatientResponse _$SearchPatientResponseFromJson(
   Map<String, dynamic> json,
 ) => SearchPatientResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   patient: json['patient'] == null
       ? null
       : PatientResponse.fromJson(json['patient'] as Map<String, dynamic>),
@@ -89,8 +89,8 @@ Map<String, dynamic> _$SearchPatientResponseToJson(
 
 AddRecordResponse _$AddRecordResponseFromJson(Map<String, dynamic> json) =>
     AddRecordResponse(
-      success: json['success'] as bool,
-      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      message: json['message'] as String? ?? '',
       medicalRecord: json['medicalRecord'] == null
           ? null
           : MedicalRecord.fromJson(
@@ -108,8 +108,8 @@ Map<String, dynamic> _$AddRecordResponseToJson(AddRecordResponse instance) =>
 AddPrescriptionResponse _$AddPrescriptionResponseFromJson(
   Map<String, dynamic> json,
 ) => AddPrescriptionResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   prescription: json['prescription'] == null
       ? null
       : Prescription.fromJson(json['prescription'] as Map<String, dynamic>),
@@ -126,8 +126,8 @@ Map<String, dynamic> _$AddPrescriptionResponseToJson(
 PatientProfileResponse _$PatientProfileResponseFromJson(
   Map<String, dynamic> json,
 ) => PatientProfileResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   patient: json['patient'] == null
       ? null
       : PatientResponse.fromJson(json['patient'] as Map<String, dynamic>),
@@ -142,8 +142,8 @@ Map<String, dynamic> _$PatientProfileResponseToJson(
 };
 
 QrResponse _$QrResponseFromJson(Map<String, dynamic> json) => QrResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   qrCodeUrl: json['qrCodeUrl'] as String?,
   token: json['token'] as String?,
 );
@@ -159,8 +159,8 @@ Map<String, dynamic> _$QrResponseToJson(QrResponse instance) =>
 EmergencyScreenResponse _$EmergencyScreenResponseFromJson(
   Map<String, dynamic> json,
 ) => EmergencyScreenResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   emergencyInfo: json['emergencyInfo'] == null
       ? null
       : EmergencyInfo.fromJson(json['emergencyInfo'] as Map<String, dynamic>),
@@ -177,8 +177,8 @@ Map<String, dynamic> _$EmergencyScreenResponseToJson(
 PharmacistProfileResponse _$PharmacistProfileResponseFromJson(
   Map<String, dynamic> json,
 ) => PharmacistProfileResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   pharmacist: json['pharmacist'] == null
       ? null
       : PharmacistResponse.fromJson(json['pharmacist'] as Map<String, dynamic>),
@@ -195,8 +195,8 @@ Map<String, dynamic> _$PharmacistProfileResponseToJson(
 SearchPrescriptionResponse _$SearchPrescriptionResponseFromJson(
   Map<String, dynamic> json,
 ) => SearchPrescriptionResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   prescriptions: (json['prescriptions'] as List<dynamic>?)
       ?.map((e) => Prescription.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -213,8 +213,8 @@ Map<String, dynamic> _$SearchPrescriptionResponseToJson(
 DrugInteractionResponse _$DrugInteractionResponseFromJson(
   Map<String, dynamic> json,
 ) => DrugInteractionResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   hasInteractions: json['hasInteractions'] as bool?,
   warnings: json['warnings'] as List<dynamic>?,
 );
@@ -231,8 +231,8 @@ Map<String, dynamic> _$DrugInteractionResponseToJson(
 AdminProfileResponse _$AdminProfileResponseFromJson(
   Map<String, dynamic> json,
 ) => AdminProfileResponse(
-  success: json['success'] as bool,
-  message: json['message'] as String?,
+  success: json['success'] as bool?,
+  message: json['message'] as String? ?? '',
   admin: json['admin'] == null
       ? null
       : AdminResponse.fromJson(json['admin'] as Map<String, dynamic>),

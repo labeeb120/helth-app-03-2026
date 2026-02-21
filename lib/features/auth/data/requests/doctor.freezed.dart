@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DoctorRegisterRequest {
 
- String get nationalId; String get password; String get confirmPassword; String get fullName; DateTime get dateOfBirth; String get phoneNumber; String get email; String get licenseNumber; String get specialization; String get hospital; String get licenseDocumentUrl;
+ String get nationalId; String get password; String get confirmPassword; String get fullName; DateTime get dateOfBirth; String get phoneNumber; String get email; String get licenseNumber; String get specialization; String get hospital; String? get licenseDocumentUrl;
 /// Create a copy of DoctorRegisterRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DoctorRegisterRequestCopyWith<$Res>  {
   factory $DoctorRegisterRequestCopyWith(DoctorRegisterRequest value, $Res Function(DoctorRegisterRequest) _then) = _$DoctorRegisterRequestCopyWithImpl;
 @useResult
 $Res call({
- String nationalId, String password, String confirmPassword, String fullName, DateTime dateOfBirth, String phoneNumber, String email, String licenseNumber, String specialization, String hospital, String licenseDocumentUrl
+ String nationalId, String password, String confirmPassword, String fullName, DateTime dateOfBirth, String phoneNumber, String email, String licenseNumber, String specialization, String hospital, String? licenseDocumentUrl
 });
 
 
@@ -65,7 +65,7 @@ class _$DoctorRegisterRequestCopyWithImpl<$Res>
 
 /// Create a copy of DoctorRegisterRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? nationalId = null,Object? password = null,Object? confirmPassword = null,Object? fullName = null,Object? dateOfBirth = null,Object? phoneNumber = null,Object? email = null,Object? licenseNumber = null,Object? specialization = null,Object? hospital = null,Object? licenseDocumentUrl = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? nationalId = null,Object? password = null,Object? confirmPassword = null,Object? fullName = null,Object? dateOfBirth = null,Object? phoneNumber = null,Object? email = null,Object? licenseNumber = null,Object? specialization = null,Object? hospital = null,Object? licenseDocumentUrl = freezed,}) {
   return _then(_self.copyWith(
 nationalId: null == nationalId ? _self.nationalId : nationalId // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
@@ -77,8 +77,8 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,licenseNumber: null == licenseNumber ? _self.licenseNumber : licenseNumber // ignore: cast_nullable_to_non_nullable
 as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
 as String,hospital: null == hospital ? _self.hospital : hospital // ignore: cast_nullable_to_non_nullable
-as String,licenseDocumentUrl: null == licenseDocumentUrl ? _self.licenseDocumentUrl : licenseDocumentUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,licenseDocumentUrl: freezed == licenseDocumentUrl ? _self.licenseDocumentUrl : licenseDocumentUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nationalId,  String password,  String confirmPassword,  String fullName,  DateTime dateOfBirth,  String phoneNumber,  String email,  String licenseNumber,  String specialization,  String hospital,  String licenseDocumentUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nationalId,  String password,  String confirmPassword,  String fullName,  DateTime dateOfBirth,  String phoneNumber,  String email,  String licenseNumber,  String specialization,  String hospital,  String? licenseDocumentUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DoctorRegisterRequest() when $default != null:
 return $default(_that.nationalId,_that.password,_that.confirmPassword,_that.fullName,_that.dateOfBirth,_that.phoneNumber,_that.email,_that.licenseNumber,_that.specialization,_that.hospital,_that.licenseDocumentUrl);case _:
@@ -184,7 +184,7 @@ return $default(_that.nationalId,_that.password,_that.confirmPassword,_that.full
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nationalId,  String password,  String confirmPassword,  String fullName,  DateTime dateOfBirth,  String phoneNumber,  String email,  String licenseNumber,  String specialization,  String hospital,  String licenseDocumentUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nationalId,  String password,  String confirmPassword,  String fullName,  DateTime dateOfBirth,  String phoneNumber,  String email,  String licenseNumber,  String specialization,  String hospital,  String? licenseDocumentUrl)  $default,) {final _that = this;
 switch (_that) {
 case _DoctorRegisterRequest():
 return $default(_that.nationalId,_that.password,_that.confirmPassword,_that.fullName,_that.dateOfBirth,_that.phoneNumber,_that.email,_that.licenseNumber,_that.specialization,_that.hospital,_that.licenseDocumentUrl);case _:
@@ -204,7 +204,7 @@ return $default(_that.nationalId,_that.password,_that.confirmPassword,_that.full
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nationalId,  String password,  String confirmPassword,  String fullName,  DateTime dateOfBirth,  String phoneNumber,  String email,  String licenseNumber,  String specialization,  String hospital,  String licenseDocumentUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nationalId,  String password,  String confirmPassword,  String fullName,  DateTime dateOfBirth,  String phoneNumber,  String email,  String licenseNumber,  String specialization,  String hospital,  String? licenseDocumentUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _DoctorRegisterRequest() when $default != null:
 return $default(_that.nationalId,_that.password,_that.confirmPassword,_that.fullName,_that.dateOfBirth,_that.phoneNumber,_that.email,_that.licenseNumber,_that.specialization,_that.hospital,_that.licenseDocumentUrl);case _:
@@ -219,7 +219,7 @@ return $default(_that.nationalId,_that.password,_that.confirmPassword,_that.full
 @JsonSerializable()
 
 class _DoctorRegisterRequest implements DoctorRegisterRequest {
-  const _DoctorRegisterRequest({required this.nationalId, required this.password, required this.confirmPassword, required this.fullName, required this.dateOfBirth, required this.phoneNumber, required this.email, required this.licenseNumber, required this.specialization, required this.hospital, required this.licenseDocumentUrl});
+  const _DoctorRegisterRequest({required this.nationalId, required this.password, required this.confirmPassword, required this.fullName, required this.dateOfBirth, required this.phoneNumber, required this.email, required this.licenseNumber, required this.specialization, required this.hospital, this.licenseDocumentUrl});
   factory _DoctorRegisterRequest.fromJson(Map<String, dynamic> json) => _$DoctorRegisterRequestFromJson(json);
 
 @override final  String nationalId;
@@ -232,7 +232,7 @@ class _DoctorRegisterRequest implements DoctorRegisterRequest {
 @override final  String licenseNumber;
 @override final  String specialization;
 @override final  String hospital;
-@override final  String licenseDocumentUrl;
+@override final  String? licenseDocumentUrl;
 
 /// Create a copy of DoctorRegisterRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -267,7 +267,7 @@ abstract mixin class _$DoctorRegisterRequestCopyWith<$Res> implements $DoctorReg
   factory _$DoctorRegisterRequestCopyWith(_DoctorRegisterRequest value, $Res Function(_DoctorRegisterRequest) _then) = __$DoctorRegisterRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String nationalId, String password, String confirmPassword, String fullName, DateTime dateOfBirth, String phoneNumber, String email, String licenseNumber, String specialization, String hospital, String licenseDocumentUrl
+ String nationalId, String password, String confirmPassword, String fullName, DateTime dateOfBirth, String phoneNumber, String email, String licenseNumber, String specialization, String hospital, String? licenseDocumentUrl
 });
 
 
@@ -284,7 +284,7 @@ class __$DoctorRegisterRequestCopyWithImpl<$Res>
 
 /// Create a copy of DoctorRegisterRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? nationalId = null,Object? password = null,Object? confirmPassword = null,Object? fullName = null,Object? dateOfBirth = null,Object? phoneNumber = null,Object? email = null,Object? licenseNumber = null,Object? specialization = null,Object? hospital = null,Object? licenseDocumentUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? nationalId = null,Object? password = null,Object? confirmPassword = null,Object? fullName = null,Object? dateOfBirth = null,Object? phoneNumber = null,Object? email = null,Object? licenseNumber = null,Object? specialization = null,Object? hospital = null,Object? licenseDocumentUrl = freezed,}) {
   return _then(_DoctorRegisterRequest(
 nationalId: null == nationalId ? _self.nationalId : nationalId // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
@@ -296,8 +296,8 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,licenseNumber: null == licenseNumber ? _self.licenseNumber : licenseNumber // ignore: cast_nullable_to_non_nullable
 as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
 as String,hospital: null == hospital ? _self.hospital : hospital // ignore: cast_nullable_to_non_nullable
-as String,licenseDocumentUrl: null == licenseDocumentUrl ? _self.licenseDocumentUrl : licenseDocumentUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,licenseDocumentUrl: freezed == licenseDocumentUrl ? _self.licenseDocumentUrl : licenseDocumentUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/constants/k.dart';
@@ -15,6 +17,8 @@ import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 import 'package:health_app/shared/widgets/text_button.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -43,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
     text: '123456789'.dev,
   );
   final TextEditingController _idCardController = TextEditingController(
-    text: '12345678dd912345'.dev,
+    text: '123456789'.dev,
   );
   final TextEditingController _passwordController = TextEditingController(
     text: 'password'.dev,
@@ -65,6 +69,40 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final bool _isLoading = false;
+  File? _selectedLicenseFile;
+
+  Future<void> _handleLicenseDocumentPicked(File? file) async {
+    if (file == null) return;
+
+    try {
+      // 1. Get the permanent directory for the app
+      final directory = await getApplicationDocumentsDirectory();
+
+      // 2. Extract the original filename
+      final fileName = p.basename(file.path);
+
+      // 3. Create the new permanent path
+      final permanentPath_ = p.join(directory.path, 'healthapp');
+      if (!Directory(permanentPath_).existsSync()) {
+        await Directory(permanentPath_).create();
+      }
+
+      final permanentPath = p.join(permanentPath_, fileName);
+
+      // 4. Copy the file to the new path
+      // copy() returns a new File object pointing to the new location
+      final savedFile = await file.copy(permanentPath);
+
+      setState(() {
+        _selectedLicenseFile = File(permanentPath);
+      });
+
+      debugPrint("File saved permanently at: ${_selectedLicenseFile?.path}");
+    } catch (e) {
+      debugPrint("Error saving file: $e");
+      // Handle error (e.g., show a snackbar)
+    }
+  }
 
   void goHome() {
     context.toNamed(AppRoutes.home);
@@ -145,7 +183,7 @@ class _RegisterPageState extends State<RegisterPage> {
       licenseNumber: licenseNumberController.text,
       specialization: specializationController.text,
       hospital: hospitalController.text,
-      licenseDocumentUrl: licenseDocumentUrlController.text,
+      // licenseDocumentUrl: licenseDocumentUrlController.text,
     );
 
     return await di<AppRepositories>().registerDoctor(data.toJson());
@@ -161,11 +199,13 @@ class _RegisterPageState extends State<RegisterPage> {
       phoneNumber: _phoneController.text,
       email: _emailController.text,
       licenseNumber: licenseNumberController.text,
-      licenseDocumentUrl: licenseDocumentUrlController.text,
+      licenseDocument:
+          _selectedLicenseFile?.path ?? licenseDocumentUrlController.text,
       pharmacyName: pharmacyNameController.text,
     );
+    // xlog(_selectedLicenseFile?.path ?? '');
 
-    return await di<AppRepositories>().registerPharmacist(data.toJson());
+    return await di<AppRepositories>().registerPharmacist(data);
   }
 
   void _onLoginInested() {
@@ -217,6 +257,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   pharmacyNameController: pharmacyNameController,
                   specializationController: specializationController,
                   hospitalController: hospitalController,
+                  onLicenseDocumentPicked: _handleLicenseDocumentPicked,
                 ),
                 const SizedBox(height: AppLayout.spacingLarge),
                 Center(

@@ -69,6 +69,7 @@ class AppStorage {
 
   String getappLoale() => sharedPreferences.getString(appLocalKey) ?? 'ar';
   String? getUserToken() => sharedPreferences.getString(userTokenKey);
+  Future<bool?> setUserToken(String val) async => await sharedPreferences.setString(userTokenKey,val);
 
   Future<void> setAppAuthState(AppAuthState auth) async {
     await sharedPreferences.setString(

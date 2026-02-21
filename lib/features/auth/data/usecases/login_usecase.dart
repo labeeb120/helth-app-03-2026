@@ -3,6 +3,7 @@ import 'package:health_app/core/constants/k.dart';
 import 'package:health_app/core/user/user.dart';
 import 'package:health_app/features/auth/data/responses/user/user_response.dart';
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:health_app/shared/ex.dart';
 
 class LoginUsecaseImpl extends LoginUsecase {
   final Dio dio;
@@ -25,7 +26,7 @@ class LoginUsecaseImpl extends LoginUsecase {
 
     final response = LoginResponse.fromJson(data);
 
-    if (response.success ) {
+    if (response.success.isN() ) {
       return ErrorOr.success(
         data: switch (params.userType) {
           UserType.initial => throw UnimplementedError(),

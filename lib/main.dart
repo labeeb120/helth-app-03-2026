@@ -1,9 +1,8 @@
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:get_it/get_it.dart';
-import 'package:health_app/auth_state.dart'
-    show accountProvider, di;
+import 'package:health_app/auth_state.dart' show accountProvider, di;
 import 'package:health_app/core/router/app_routes.dart';
 import 'package:health_app/core/services/storage.dart';
 import 'package:health_app/features/auth/data/usecases/login_usecase.dart'
@@ -12,7 +11,8 @@ import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/features/auth/ui/pages/register_page.dart';
 import 'package:health_app/features/doctor/ui/home.dart' as doctor_pages;
-import 'package:health_app/features/pharmacist/ui/home/page.dart' as pharmacist_page;
+import 'package:health_app/features/pharmacist/ui/home/page.dart'
+    as pharmacist_page;
 // import 'package:health_app/features/home/ui/pages/initialize_profile/page.dart';
 import 'package:health_app/features/home/ui/pages/p.dart' as patient;
 import 'package:health_app/features/patients/ui/home.dart'
@@ -64,25 +64,14 @@ class HealthCareApp extends StatelessWidget {
             AppRoutes.patientMHistory: (context) => const MedicalHistoryPage(),
             AppRoutes.patientHome: (context) => const patient.MainPatientPage(),
             AppRoutes.doctorHome: (context) => const doctor_pages.HomePage(),
-            AppRoutes.pharmacistHome: (context) => const pharmacist_page.HomePage(),
+            AppRoutes.pharmacistHome: (context) =>
+                const pharmacist_page.HomePage(),
           },
         );
       },
     );
   }
-
-
-
-
-
 }
-
-
-
-
-
-
-
 
 // njfdhjs84367467323hn98sd9s9mdsm8d9s79
 // "v=DMARC1; p=none; rua=mailto:dc1298f39eb34d1abd26d597b47c0a51@dmarc-reports.cloudflare.net"
@@ -103,13 +92,6 @@ class SplashPage extends ConsumerWidget {
         admin: (p) => patient.HomePage(),
       ),
     );
-    // .when(
-    // initial: (_) => LoginPage(),
-    // patient: (_) => P.HomePage(),
-    // doctor: (_) => DoctorHomePage(),
-    // pharmacisit: (_) => PharmacistHomePage(),
-    // admin: (_) => AdminHomePage(),
-    // );
   }
 }
 
@@ -150,10 +132,10 @@ Future<void> init() async {
     return await SharedPreferences.getInstance();
   });
 
-  di.registerFactory<Dio>(() => DioFactory(di()).getDio());
+  di.registerFactory<DioFactory>(() => DioFactory(di()));
 
-  di.registerLazySingleton<ApiService>(() => ApiService(dio: di()));
-  di.registerLazySingleton<AppRepositories>(
+  di.registerFactory<ApiService>(() => ApiService(di()));
+  di.registerFactory<AppRepositories>(
     () => AppRepositories(api: di(), storage: di()),
   );
 

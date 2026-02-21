@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_app/core/error/app_error.dart' show ErrorOr, ServerError;
 import 'package:health_app/core/services/storage.dart';
+import 'package:health_app/features/auth/data/requests/pharmacist.dart';
 import 'package:health_app/features/auth/data/responses/user/user_response.dart'
     show
         DoctorProfileResponse,
@@ -46,8 +50,9 @@ class AppRepositories {
           role == 'pharmacist' ||
           role == 'admin';
 
-      if (response.success && isValid) {
+      if (response.success.isN() && isValid) {
         // if () {
+        await storage.setUserToken(response.accessToken ?? '');
         await _getProfile(role);
 
         final auth = AuthRecord(
@@ -76,6 +81,7 @@ class AppRepositories {
     Map<String, dynamic> data,
   ) async {
     try {
+      print(data);
       final res = await api.registerPatient(data);
       return ErrorOr.success(data: GeneralResponse.fromJson(res));
     } catch (e) {
@@ -97,12 +103,39 @@ class AppRepositories {
   }
 
   Future<ErrorOr<GeneralResponse>> registerPharmacist(
-    Map<String, dynamic> data,
+    PharmacistRegisterRequest data,
   ) async {
     try {
-      final res = await api.registerPharmacist(data);
+      final File file = File(data.licenseDocument);
+      // data.
+      String fileName = file.path.split('/').last;
+      FormData formData = FormData.fromMap({
+        "licenseDocument": await MultipartFile.fromFile(
+          file.path,
+          filename: fileName,
+        ),
 
-      return ErrorOr.success(data: GeneralResponse.fromJson(res));
+        "nationalId": data.nationalId,
+        "password": data.password,
+        "confirmPassword": data.confirmPassword,
+        "fullName": data.fullName,
+        "dateOfBirth": data.dateOfBirth,
+        "phoneNumber": data.phoneNumber,
+        "email": data.email,
+        "licenseNumber": data.licenseNumber,
+        "pharmacyName": data.pharmacyName,
+
+        // Additional fields
+      });
+
+      final res = await api.registerPharmacist(formData);
+      final res2 = GeneralResponse.fromJson(res);
+
+      if (res2.success.isN()) {
+        return ErrorOr.success(data: res2);
+      }
+
+      return ErrorOr.error(error: ServerError(msg: res2.message ?? ''));
     } catch (e) {
       debugPrint('Pharmacist registration error: $e');
       return ErrorOr.error(error: ServerError(msg: 'Registration failed: $e'));
@@ -170,7 +203,7 @@ class AppRepositories {
 
       res.patient?.toJson().log('res ');
 
-      if (res.success && res.patient != null) {
+      if (res.success.isN() && res.patient != null) {
         final patient = res.patient!;
         final patientAccount = PatientAccount(
           patient: Patient.fromJson(patient.toJson()),
@@ -189,7 +222,7 @@ class AppRepositories {
       final json = await api.getDoctorProfile();
       final res = DoctorProfileResponse.fromJson(json);
 
-      if (res.success && res.doctor != null) {
+      if (res.success.isN() && res.doctor != null) {
         final doctor = res.doctor!;
         final doctorAccount = DoctorAccount(
           doctor: Doctor.fromJson(doctor.toJson()),
@@ -205,11 +238,13 @@ class AppRepositories {
   }
 
   Future<void> _getPharmacistProfile() async {
+    final json = await api.getPharmacistProfile();
+
+    xlog(json);
     try {
-      final json = await api.getPharmacistProfile();
       final res = PharmacistProfileResponse.fromJson(json);
 
-      if (res.success && res.pharmacist != null) {
+      if (res.success.isN() && res.pharmacist != null) {
         final pharmacist = res.pharmacist!;
         final pharmacistAccount = PharmacistAccount(
           pharmacist: Pharmacist.fromJson(pharmacist.toJson()),
@@ -226,7 +261,7 @@ class AppRepositories {
     //   final json = await api.getAdminProfile();
     //   final res = AdminProfileResponse.fromJson(json);
 
-    //   if (res.success && res.admin != null) {
+    //   if (res.success.isN() && res.admin != null) {
     //     final admin = res.admin!;
     //     final adminAccount = AdminAccount(
     //       admin: Admin.fromJson(admin.toJson()),
@@ -246,7 +281,7 @@ class AppRepositories {
       final res = await api.updatePatientProfile(data);
       final patientRes = PatientProfileResponse.fromJson(res);
 
-      if (patientRes.success) {
+      if (patientRes.success.isN()) {
         return ErrorOr.success(data: patientRes.message ?? '');
         //   // Refresh profile after update
         //   // await _getPatientProfile();
@@ -281,7 +316,7 @@ class AppRepositories {
     try {
       final json = await api.updatePharmacistProfile(data.toJson());
       final response = PharmacistProfileResponse.fromJson(json);
-      if (response.success && response.pharmacist != null) {
+      if (response.success.isN() && response.pharmacist != null) {
         // Refresh profile after update
         // await _getPharmacistProfile();
         return ErrorOr.success(
@@ -415,7 +450,7 @@ class AppRepositories {
     try {
       final json = await api.searchPrescription(identifier);
       final res = PrescriptionsResponse.fromJson(json);
-      if (res.success) {
+      if (res.success.isN()) {
         return ErrorOr.success(data: res);
       }
       throw 'un able to get the data, Converssion Error';

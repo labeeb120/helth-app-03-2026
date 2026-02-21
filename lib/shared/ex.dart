@@ -33,6 +33,12 @@ extension AppEx on BuildContext {
   }
 }
 
+extension BoolEx on bool? {
+  bool isN() {
+    return this ?? false;
+  }
+}
+
 extension Loger on Object? {
   void log([String s = '']) {
     if (this != null) {
@@ -43,7 +49,7 @@ extension Loger on Object? {
   bool notNull() => this != null;
 }
 
-void xlog(Object o) {
+void xlog(Object? o) {
   print('###: $o');
 }
 

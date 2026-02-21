@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color(0xFFF8FAFD),
       body: PageView(
         controller: _pageController,
-        children: [MyHomePage(), MyHomePage(), MyHomePage(), ProfilePage()],
+        children: [MyHomePage(), InitializeProfilePage(), MyHomePage(), ProfilePage()],
       ),
 
       // Bottom Navigation Bar

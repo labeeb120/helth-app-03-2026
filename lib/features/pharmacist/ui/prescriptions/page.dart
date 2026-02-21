@@ -163,6 +163,10 @@ class PrescriptionCard extends StatelessWidget {
                       prescription.diagnosis,
                       style: const TextStyle(color: Colors.grey),
                     ),
+                    Text(
+                      prescription.notes,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ),
                 // PopupMenuButton(
