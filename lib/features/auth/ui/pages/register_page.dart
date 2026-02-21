@@ -173,16 +173,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<ErrorOr<GeneralResponse>> _registerDoctor() async {
     final data = DoctorRegisterRequest(
-      confirmPassword: passwordConfirmController.text,
       nationalId: _idCardController.text,
       password: _passwordController.text,
+      confirmPassword: passwordConfirmController.text,
       fullName: nameController.text,
-      dateOfBirth: DateTime.parse(_dateOfBirthController.text),
-      phoneNumber: _phoneController.text,
       email: _emailController.text,
+      phoneNumber: _phoneController.text,
       licenseNumber: licenseNumberController.text,
       specialization: specializationController.text,
       hospital: hospitalController.text,
+      // dateOfBirth: DateTime.parse(_dateOfBirthController.text),
       // licenseDocumentUrl: licenseDocumentUrlController.text,
     );
 

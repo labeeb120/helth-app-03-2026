@@ -26,7 +26,8 @@ class RegisterForm extends StatefulWidget {
   final bool isLoading;
   final String selectedUserType;
   final ValueChanged<String?> onUserTypeChanged;
-  final Function(File?)? onLicenseDocumentPicked; // Callback for the picked file
+  final Function(File?)?
+  onLicenseDocumentPicked; // Callback for the picked file
 
   const RegisterForm({
     super.key,
@@ -73,10 +74,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
       if (result != null && result.files.isNotEmpty) {
         PlatformFile platformFile = result.files.first;
-        
+
         if (platformFile.path != null) {
           File file = File(platformFile.path!);
-          
+
           setState(() {
             _selectedLicenseFile = file;
             _licenseFileName = platformFile.name;
@@ -129,7 +130,8 @@ class _RegisterFormState extends State<RegisterForm> {
     if (value.length < 6) {
       return 'Password must be at least 6 characters';
     }
-    if (widget.passwordConfirmController.text != widget.passwordController.text) {
+    if (widget.passwordConfirmController.text !=
+        widget.passwordController.text) {
       return 'Password don\'t match';
     }
     return null;
@@ -222,25 +224,27 @@ class _RegisterFormState extends State<RegisterForm> {
           obscureText: true,
           validator: passwordValidator,
         ),
-        CustomTextField(
-          controller: widget.dateOfBirthController,
-          labelText: 'Date of birth',
-          isDatePicker: true,
-          lastDate: DateTime.now(),
-          validator: (a) {
-            if (a == null || a.isEmpty) {
-              return 'You must enter a valid date';
-            }
-            try {
-              final aa = DateTime.tryParse(a);
-            } catch (e) {
-              return 'You must enter a valid date';
-            }
-            return null;
-          },
-        ),
+        if (widget.userType == UserType.patient)
+          CustomTextField(
+            controller: widget.dateOfBirthController,
+            labelText: 'Date of birth',
+            isDatePicker: true,
+            lastDate: DateTime.now(),
+            validator: (a) {
+              if (a == null || a.isEmpty) {
+                return 'You must enter a valid date';
+              }
+              try {
+                final aa = DateTime.tryParse(a);
+              } catch (e) {
+                return 'You must enter a valid date';
+              }
+              return null;
+            },
+          ),
 
-        if (widget.userType == UserType.doctor || widget.userType == UserType.pharmacist)
+        if (widget.userType == UserType.doctor ||
+            widget.userType == UserType.pharmacist)
           CustomTextField(
             controller: widget.licenseNumberController,
             labelText: 'License number',
@@ -253,7 +257,8 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
 
         // License Document File Picker Section
-        if (widget.userType == UserType.doctor || widget.userType == UserType.pharmacist)
+        if (widget.userType == UserType.doctor ||
+            widget.userType == UserType.pharmacist)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -265,17 +270,19 @@ class _RegisterFormState extends State<RegisterForm> {
                   labelText: '',
                 ),
               ),
-              
+
               Text(
                 'License Document',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.8),
                 ),
               ),
               const SizedBox(height: 8),
-              
+
               // File picker button
               OutlinedButton(
                 onPressed: _isPickingFile ? null : _pickLicenseDocument,
@@ -297,13 +304,15 @@ class _RegisterFormState extends State<RegisterForm> {
                         children: [
                           const Icon(Icons.attach_file),
                           const SizedBox(width: 8),
-                          Text(_licenseFileName.isEmpty 
-                              ? 'Choose License Document' 
-                              : 'Change Document'),
+                          Text(
+                            _licenseFileName.isEmpty
+                                ? 'Choose License Document'
+                                : 'Change Document',
+                          ),
                         ],
                       ),
               ),
-              
+
               // Selected file info
               if (_licenseFileName.isNotEmpty)
                 Padding(
@@ -342,10 +351,14 @@ class _RegisterFormState extends State<RegisterForm> {
                               ),
                               if (_selectedLicenseFile != null)
                                 Text(
-                                  _formatFileSize(_selectedLicenseFile!.lengthSync()),
+                                  _formatFileSize(
+                                    _selectedLicenseFile!.lengthSync(),
+                                  ),
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.6),
                                   ),
                                 ),
                             ],
@@ -361,7 +374,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                   ),
                 ),
-              
+
               // Help text
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
@@ -369,7 +382,9 @@ class _RegisterFormState extends State<RegisterForm> {
                   'Accepted formats: PDF, JPG, PNG, DOC (Max 10MB)',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),
@@ -388,7 +403,7 @@ class _RegisterFormState extends State<RegisterForm> {
               return null;
             },
           ),
-        
+
         if (widget.userType == UserType.doctor)
           CustomTextField(
             controller: widget.specializationController,
@@ -400,7 +415,7 @@ class _RegisterFormState extends State<RegisterForm> {
               return null;
             },
           ),
-        
+
         if (widget.userType == UserType.pharmacist)
           CustomTextField(
             controller: widget.pharmacyNameController,
@@ -412,7 +427,7 @@ class _RegisterFormState extends State<RegisterForm> {
               return null;
             },
           ),
-        
+
         CustomButton(
           onPressed: widget.onLogin,
           text: localizations.register,
