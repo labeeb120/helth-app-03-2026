@@ -12,6 +12,7 @@ part 'user_response.g.dart';
 @JsonSerializable()
 class LoginResponse extends BaseResponse {
   final String? accessToken;
+  final String? refreshToken;
   final String? role;
   final int? userId;
 
@@ -21,6 +22,7 @@ class LoginResponse extends BaseResponse {
     this.accessToken,
     this.role,
     this.userId,
+    this.refreshToken,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {

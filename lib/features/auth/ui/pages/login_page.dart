@@ -39,8 +39,8 @@ class _LoginPageState extends State<LoginPage> {
     // text: DEV_ENV ? '1111111111' : null,
   );
   final TextEditingController _passwordController = TextEditingController(
-    text: DEV_ENV ? 'pa32543vssword' : null,
-    // text: DEV_ENV ? 'Admin@123' : null,
+    // text: DEV_ENV ? 'pa32543vssword' : null,
+    text: DEV_ENV ? 'Admin@123' : null,
   );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final bool _isLoading = false;

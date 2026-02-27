@@ -70,7 +70,7 @@ class AppRepositories {
           role: role,
           userId: response.userId ?? 0,
         );
-        // storage.setAuthRecord(auth);
+        storage.setAuthRecord(auth);
 
         return ErrorOr.success(data: auth);
         // }
@@ -429,6 +429,11 @@ class AppRepositories {
   Future<ErrorOr<dynamic>> searchPatient(String identifier) async {
     try {
       final res = await api.searchPatient(identifier);
+      // final response = await getDio().post(
+      //   '/Doctor/search-patient',
+      //   data: {"identifier": identifier},
+      // );
+      // xlog('sss2' + response.data.toString());
       return ErrorOr.success(data: res);
     } catch (e) {
       debugPrint('Search patient error: $e');

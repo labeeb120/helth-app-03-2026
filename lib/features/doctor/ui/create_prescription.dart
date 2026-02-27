@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/error/app_error.dart';
 import 'package:health_app/features/doctor/data/providers/prescriptions.dart';
+import 'package:health_app/features/doctor/data/providers/search_patient.dart';
 // import 'package:health_app/features/doctor/data/models/prescription.dart';
 import 'package:health_app/features/doctor/data/requests/prescription.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
@@ -100,6 +101,115 @@ class _CreatePrescriptionDialogState
   }
 
   Widget _buildStepContent() {
+    final _controller = TextEditingController();
+    final _k = GlobalKey<FormState>();
+
+    void handelSearchDialog() {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final drugs = ref.watch(medicationSearchResultsProvider);
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.70,
+                    child: Column(
+                      children: [
+                        Form(
+                          key: _k,
+                          child: Column(
+                            spacing: 6,
+                            children: [
+                              Row(children: [Text('search')]),
+                              TextFormField(
+                                controller: _controller,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'you must add one letter at least';
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (_k.currentState!.validate()) {
+                              xlog('ssssssssssssssssssssssssssss');
+                              // ref.invalidate(searchMedicationProvider(identifier: ''));
+                              final dio = di<AppRepositories>().getDio();
+                              final res = await dio.get(
+                                '/Doctor/search-drugs?query=${_controller.text}',
+                              );
+                              final data = res.data;
+                              // xlog(data.toString());
+                              xlog(data.runtimeType);
+                              if (data.runtimeType == List) {
+                                final d = (data as List<dynamic>)
+                                    .map(
+                                      (s) => MedicationSearchResult.fromJson(s),
+                                    )
+                                    .toList();
+                                if (d.runtimeType ==
+                                    List<MedicationSearchResult>) {
+                                  ref
+                                      .read(
+                                        medicationSearchResultsProvider
+                                            .notifier,
+                                      )
+                                      .init(d);
+                                }
+                                // xlog(d.runtimeType);
+                                // xlog(d.first);
+
+                                //   return ErrorOr.success(
+                                //     data:
+                                //   );
+                              }
+                            }
+                          },
+                          child: Text('search'),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                ...drugs.map(
+                                  (m) => ListTile(
+                                    onTap: () {
+                                      medNameController.text =
+                                          m.brandName ?? m.scientificName ?? '';
+                                      context.pop();
+                                    },
+                                    title: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 3,
+                                      ),
+                                      child: Row(
+                                        children: [Text(m.brandName ?? '')],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     if (_currentStep == 0) {
       return Form(
         key: _formKeys[0],
@@ -144,6 +254,19 @@ class _CreatePrescriptionDialogState
             ),
             const Divider(),
           ],
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: handelSearchDialog,
+                  icon: Icon(Icons.search),
+                ),
+              ],
+            ),
+          ),
+
           // Add new medication form
           Form(
             key: _formKeys[1],
@@ -234,21 +357,33 @@ class _CreatePrescriptionDialogState
     );
 
     AppDialog().loading();
+    bool isOk = false;
     try {
       final res = await di<AppRepositories>().addPrescription(req.toJson());
       res.when(
         success: (s) {
+          // context.pop();
+          // AppDialog().dismiss();
           ref.read(prescriptionsStoreProvider.notifier).addPrescription(req);
-          Navigator.pop(context, true);
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Success')));
+          isOk = true;
         },
         error: (er) => xlog(er),
       );
     } catch (e) {
     } finally {
       AppDialog().dismiss();
+      context.pop();
     }
+
+    if (isOk) {
+      // context.
+      showSuccess();
+    }
+  }
+
+  void showSuccess() {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Success')));
   }
 }

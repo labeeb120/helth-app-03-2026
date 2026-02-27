@@ -69,6 +69,7 @@ class K {
   static const String loginUrl = "/auth/login";
   static const String registerUrl = "/auth/register";
   //
+  static const String refreshTokenUrl = "/auth/refresh";
 
   static const String doctorHomeUrl =
       "/doctorDashboard/patients?filter=recent_activity";

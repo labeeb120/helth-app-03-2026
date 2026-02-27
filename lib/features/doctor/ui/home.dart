@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/constants/k.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor;
 import 'package:health_app/features/auth/domain/usecases/register_usecase.dart';
+import 'package:health_app/features/doctor/data/providers/search_patient.dart';
 import 'package:health_app/features/doctor/data/requests/home.dart';
 import 'package:health_app/features/doctor/data/responses/insights.dart'
     show DoctorDashboardInsight;
+import 'package:health_app/features/doctor/data/responses/patient_response.dart';
 import 'package:health_app/features/doctor/ui/medical_record.dart';
 import 'package:health_app/features/doctor/ui/prescreptions.dart';
 import 'package:health_app/features/doctor/ui/profile.dart';
+import 'package:health_app/features/doctor/ui/widgets/patient_page.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
+import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 import '../data/repositories/patient_repo.dart' show PatientRepository;
 import '../domain/patient.dart' show Patient;
 // import '../widgets/patient_form_dialog.dart';
@@ -89,19 +94,6 @@ class _DoctorHomeState extends State<DoctorHome> {
     });
   }
 
-  Future<void> _addPatient() async {
-    final dio = di<AppRepositories>().getDio();
-    final a = await dio.get(K.doctorHomeUrl);
-    xlog(a.data);
-    // 20000000010005
-    // Admin@123
-
-    // await showDialog(
-    //   context: context,
-    //   builder: (context) => PatientFormDialog(onSubmit: _createPatient),
-    // );
-  }
-
   Future<void> _editPatient(RecentPatient patient) async {
     await showDialog(
       context: context,
@@ -109,17 +101,6 @@ class _DoctorHomeState extends State<DoctorHome> {
         patient: patient,
         isEditing: true,
         onSubmit: _updatePatient,
-      ),
-    );
-  }
-
-  Future<void> _createPatient(RecentPatient patient) async {
-    await _patientRepository.createPatient(patient);
-    await _loadPatients();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.tr.patientAdded),
-        backgroundColor: Colors.green,
       ),
     );
   }
@@ -182,146 +163,168 @@ class _DoctorHomeState extends State<DoctorHome> {
   Widget _buildPatientDetailsSheet(RecentPatient patient) {
     final localizations = context.tr;
 
-    return Container(
-      padding: const EdgeInsets.all(24),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.heightOf(context) * 0.8,
-      ),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        color: Colors.white,
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
+    return Consumer(
+      builder: (context, ref, c) {
+        final res = ref.watch(
+          searchPatientProvider(identifier: patient.patientCode),
+        );
+
+        return res.when(
+          data: (data) {
+            return Container(
+              padding: const EdgeInsets.all(24),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.heightOf(context) * 0.8,
+              ),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                color: Colors.white,
+              ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Container(
-                      width: 60,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(2),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 60,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            localizations.patientDetails,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Patient Info
+                          _buildDetailRow(
+                            Icons.person,
+                            localizations.patientName,
+                            patient.name,
+                          ),
+                          _buildDetailRow(
+                            Icons.phone,
+                            localizations.phoneNumber,
+                            patient.phoneNumber,
+                          ),
+                          _buildDetailRow(
+                            Icons.badge,
+                            localizations.nationalId,
+                            patient.nationalId,
+                          ),
+
+                          if (patient.email != null)
+                            _buildDetailRow(
+                              Icons.email,
+                              localizations.email,
+                              patient.email!,
+                            ),
+
+                          if (patient.gender != null)
+                            _buildDetailRow(
+                              patient.gender == 'male'
+                                  ? Icons.male
+                                  : Icons.female,
+                              localizations.gender,
+                              patient.gender == 'male'
+                                  ? localizations.male
+                                  : patient.gender == 'female'
+                                  ? localizations.female
+                                  : localizations.other,
+                            ),
+
+                          // if (patient.bloodType != null)
+                          //   _buildDetailRow(
+                          //     Icons.bloodtype,
+                          //     localizations.bloodType,
+                          //     patient.bloodType!,
+                          //   ),
+
+                          // if (patient.dateOfBirth != null)
+                          //   _buildDetailRow(
+                          //     Icons.cake,
+                          //     localizations.dateOfBirth,
+                          //     '${patient.dateOfBirth!.day}/${patient.dateOfBirth!.month}/${patient.dateOfBirth!.year}',
+                          //   ),
+                          if (patient.address != null)
+                            _buildDetailRow(
+                              Icons.location_on,
+                              localizations.address,
+                              patient.address!,
+                            ),
+
+                          // if (patient.emergencyContact != null)
+                          // _buildDetailRow(
+                          //   Icons.emergency,
+                          //   localizations.emergencyContact,
+                          //   patient.emergencyContact!,
+                          // ),
+
+                          // if (patient.notes != null)
+                          // _buildDetailRow(
+                          //   Icons.note,
+                          //   localizations.notes,
+                          //   patient.notes!,
+                          // ),
+                          const SizedBox(height: 30),
+
+                          const SizedBox(height: 20),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    localizations.patientDetails,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => _editPatient(patient),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: Text(localizations.edit),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => _deletePatient(patient),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: Text(localizations.delete),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-
-                  // Patient Info
-                  _buildDetailRow(
-                    Icons.person,
-                    localizations.patientName,
-                    patient.name,
-                  ),
-                  _buildDetailRow(
-                    Icons.phone,
-                    localizations.phoneNumber,
-                    patient.phoneNumber,
-                  ),
-                  _buildDetailRow(
-                    Icons.badge,
-                    localizations.nationalId,
-                    patient.nationalId,
-                  ),
-
-                  if (patient.email != null)
-                    _buildDetailRow(
-                      Icons.email,
-                      localizations.email,
-                      patient.email!,
-                    ),
-
-                  if (patient.gender != null)
-                    _buildDetailRow(
-                      patient.gender == 'male' ? Icons.male : Icons.female,
-                      localizations.gender,
-                      patient.gender == 'male'
-                          ? localizations.male
-                          : patient.gender == 'female'
-                          ? localizations.female
-                          : localizations.other,
-                    ),
-
-                  // if (patient.bloodType != null)
-                  //   _buildDetailRow(
-                  //     Icons.bloodtype,
-                  //     localizations.bloodType,
-                  //     patient.bloodType!,
-                  //   ),
-
-                  // if (patient.dateOfBirth != null)
-                  //   _buildDetailRow(
-                  //     Icons.cake,
-                  //     localizations.dateOfBirth,
-                  //     '${patient.dateOfBirth!.day}/${patient.dateOfBirth!.month}/${patient.dateOfBirth!.year}',
-                  //   ),
-                  if (patient.address != null)
-                    _buildDetailRow(
-                      Icons.location_on,
-                      localizations.address,
-                      patient.address!,
-                    ),
-
-                  // if (patient.emergencyContact != null)
-                  // _buildDetailRow(
-                  //   Icons.emergency,
-                  //   localizations.emergencyContact,
-                  //   patient.emergencyContact!,
-                  // ),
-
-                  // if (patient.notes != null)
-                  // _buildDetailRow(
-                  //   Icons.note,
-                  //   localizations.notes,
-                  //   patient.notes!,
-                  // ),
-                  const SizedBox(height: 30),
-
-                  const SizedBox(height: 20),
                 ],
               ),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => _editPatient(patient),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text(localizations.edit),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => _deletePatient(patient),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text(localizations.delete),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            );
+          },
+          error: (Object error, StackTrace stackTrace) {
+            return Container(child: Text(error.toString()));
+          },
+          loading: () {
+            return CircularProgressIndicator();
+          },
+        );
+
+        // return
+      },
     );
   }
 
@@ -442,6 +445,41 @@ class _DoctorHomeState extends State<DoctorHome> {
     );
   }
 
+  void _handleSearchPress() async {
+    final identifier = await showDialog<String>(
+      context: context,
+      builder: (context) => const SingleInputDialog(),
+    );
+    AppDialog().loading();
+
+    xlog('oooooooooooooooooooooo');
+
+    if (identifier != null && identifier.isNotEmpty) {
+      final res = await di<AppRepositories>().searchPatient(identifier);
+      res.when(
+        success: (json) {
+          AppDialog().dismiss();
+          final response = PatientResponse.fromJson(json);
+          if (response.success) {
+            xlog(response);
+          }
+          // final response = PatientProfileResponse.fromJson(json);
+          if (response.patient != null) {
+            // _handleOnCreate(response.patient?.id ?? 1);
+            context.to(PatientPage(patient: response.patient!));
+          }
+        },
+        error: (error) {
+          xlog(error);
+          AppDialog().dismiss();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Patient not found: ${error.msg}')),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = context.tr;
@@ -551,8 +589,9 @@ class _DoctorHomeState extends State<DoctorHome> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           // final res = await di<AppRepositories>().api.getPatientProfile();
-          final res = await di<AppRepositories>().api.doctorStatistics();
-          xlog(res);
+          // final res = await di<AppRepositories>().api.doctorStatistics();
+          // xlog(res);
+          _handleSearchPress();
         },
         // onPressed: _addPatient,
         backgroundColor: Colors.blue,

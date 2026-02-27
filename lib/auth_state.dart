@@ -59,7 +59,7 @@ class AuthRecordState extends _$AuthRecordState {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Account extends _$Account {
   @override
   AccountState build() {

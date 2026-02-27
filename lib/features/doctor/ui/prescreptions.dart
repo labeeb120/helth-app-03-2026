@@ -45,18 +45,23 @@ class _PrescreptionsPageState extends ConsumerState<PrescreptionsPage> {
     );
     AppDialog().loading();
 
+    xlog('oooooooooooooooooooooo');
+
     if (identifier != null && identifier.isNotEmpty) {
       final res = await di<AppRepositories>().searchPatient(identifier);
+
       res.when(
         success: (json) {
+          AppDialog().dismiss();
+          xlog(json);
           final response = PatientResponse.fromJson(json);
           if (response.success) {
+            _handleOnCreate(response.patient?.id ?? 1);
             xlog(response);
           }
           // final response = PatientProfileResponse.fromJson(json);
-          if (response.patient != null) {
-            _handleOnCreate(response.patient?.id ?? 1);
-          }
+          // if (response.patient != null) {
+          // }
         },
         error: (error) {
           xlog(error);

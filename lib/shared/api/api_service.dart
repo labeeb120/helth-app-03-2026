@@ -4,8 +4,8 @@ import 'package:health_app/core/constants/_all.dart';
 import 'package:health_app/shared/api/dio_factory.dart';
 // import 'package:dio/io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
+// import 'package:http/http.dart' as http;
+// import 'package:path/path.dart' as path;
 
 class ApiService {
   Dio get _dio => factory.getDio();
@@ -45,55 +45,6 @@ class ApiService {
 
     return _handleResponse(response);
   }
-
-  // Future<http.Response> uploadFileWithHttp({
-  //   required File file,
-  //   required PharmacistRegisterRequest data,
-  //   required String apiUrl,
-  // }) async {
-  //   try {
-  //     // Create a multipart request
-  //     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
-
-  //     // Get clean filename
-  //     String fileName = path.basename(file.path);
-
-  //     // Add file to the request
-  //     request.files.add(
-  //       await http.MultipartFile.fromPath(
-  //         'licenseDocument', // Field name
-  //         file.path,
-  //         filename: fileName, // Clean filename
-  //       ),
-  //     );
-
-  //     // Add other form fields
-  //     request.fields.addAll({
-  //       'nationalId': data.nationalId,
-  //       'password': data.password,
-  //       'confirmPassword': data.confirmPassword,
-  //       'fullName': data.fullName,
-  //       'dateOfBirth': data.dateOfBirth?.toIso8601String() ?? '',
-  //       'phoneNumber': data.phoneNumber,
-  //       'email': data.email,
-  //       'licenseNumber': data.licenseNumber,
-  //       'pharmacyName': data.pharmacyName,
-  //     });
-
-  //     // Add headers
-  //     request.headers.addAll({'Accept': 'application/json', 'language': 'ar'});
-
-  //     // Send the request
-  //     var streamedResponse = await request.send();
-
-  //     // Get the response
-  //     var response = await http.Response.fromStream(streamedResponse);
-
-  //     return response;
-  //   } catch (e) {
-  //     throw Exception('Upload failed: $e');
-  //   }
-  // }
 
   Future<Map<String, dynamic>> registerPharmacist(FormData data) async {
     // FormData formData = FormData.fromMap({

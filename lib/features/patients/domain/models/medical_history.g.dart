@@ -17,26 +17,26 @@ _MedicalHistory _$MedicalHistoryFromJson(
   phoneNumber: json['phoneNumber'] as String,
   email: json['email'] as String?,
   address: json['address'] as String,
+  emergencyContactRelationship: json['emergencyContactRelationship'] as String?,
+  bloodType: $enumDecode(_$BloodTypeEnumMap, json['bloodType']),
+  weight: (json['weight'] as num).toDouble(),
+  height: (json['height'] as num).toDouble(),
   emergencyContactName: json['emergencyContactName'] as String,
   emergencyContactPhone: json['emergencyContactPhone'] as String,
-  emergencyContactRelationship: json['emergencyContactRelationship'] as String?,
-  height: (json['height'] as num).toDouble(),
-  weight: (json['weight'] as num).toDouble(),
-  bloodType: $enumDecode(_$BloodTypeEnumMap, json['bloodType']),
+  allergies: (json['allergies'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
   chronicConditions: (json['chronicConditions'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
-  allergies: (json['allergies'] as List<dynamic>?)
-      ?.map((e) => e as String)
+  surgeries: (json['surgeries'] as List<dynamic>?)
+      ?.map((e) => Surgery.fromJson(e as Map<String, dynamic>))
       .toList(),
   currentMedications: (json['currentMedications'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
   pastMedications: (json['pastMedications'] as List<dynamic>?)
       ?.map((e) => e as String)
-      .toList(),
-  surgeries: (json['surgeries'] as List<dynamic>?)
-      ?.map((e) => Surgery.fromJson(e as Map<String, dynamic>))
       .toList(),
   hospitalizations: (json['hospitalizations'] as List<dynamic>?)
       ?.map((e) => Hospitalization.fromJson(e as Map<String, dynamic>))
@@ -79,17 +79,17 @@ Map<String, dynamic> _$MedicalHistoryToJson(_MedicalHistory instance) =>
       'phoneNumber': instance.phoneNumber,
       'email': instance.email,
       'address': instance.address,
+      'emergencyContactRelationship': instance.emergencyContactRelationship,
+      'bloodType': _$BloodTypeEnumMap[instance.bloodType]!,
+      'weight': instance.weight,
+      'height': instance.height,
       'emergencyContactName': instance.emergencyContactName,
       'emergencyContactPhone': instance.emergencyContactPhone,
-      'emergencyContactRelationship': instance.emergencyContactRelationship,
-      'height': instance.height,
-      'weight': instance.weight,
-      'bloodType': _$BloodTypeEnumMap[instance.bloodType]!,
-      'chronicConditions': instance.chronicConditions,
       'allergies': instance.allergies,
+      'chronicConditions': instance.chronicConditions,
+      'surgeries': instance.surgeries,
       'currentMedications': instance.currentMedications,
       'pastMedications': instance.pastMedications,
-      'surgeries': instance.surgeries,
       'hospitalizations': instance.hospitalizations,
       'familyMedicalHistory': instance.familyMedicalHistory,
       'isSmoker': instance.isSmoker,

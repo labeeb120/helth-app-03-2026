@@ -13,6 +13,7 @@ LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
       accessToken: json['accessToken'] as String?,
       role: json['role'] as String?,
       userId: (json['userId'] as num?)?.toInt(),
+      refreshToken: json['refreshToken'] as String?,
     );
 
 Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
@@ -20,6 +21,7 @@ Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
       'success': instance.success,
       'message': instance.message,
       'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
       'role': instance.role,
       'userId': instance.userId,
     };

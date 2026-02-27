@@ -1,24 +1,26 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
+import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
+import 'package:health_app/shared/ex.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 // import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:health_app/features/auth/domain/models/patient.dart';
 
-class DoctorProfilePage extends StatefulWidget {
+class DoctorProfilePage extends ConsumerStatefulWidget {
   final Doctor doctor;
 
   const DoctorProfilePage({super.key, required this.doctor});
 
   @override
-  State<DoctorProfilePage> createState() => _DoctorProfilePageState();
+  ConsumerState<DoctorProfilePage> createState() => _DoctorProfilePageState();
 }
 
-class _DoctorProfilePageState extends State<DoctorProfilePage> {
+class _DoctorProfilePageState extends ConsumerState<DoctorProfilePage> {
   bool _isEditing = false;
   late Doctor _editedDoctor;
   final _formKey = GlobalKey<FormState>();
@@ -31,35 +33,50 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? 'تعديل الملف الشخصي' : 'الملف الشخصي للطبيب'),
-        centerTitle: true,
-        actions: [
-          if (!_isEditing)
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                setState(() {
-                  _isEditing = true;
-                });
-              },
-            ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: _isEditing ? _buildEditForm() : _buildProfileView(),
-      ),
+    final authState = ref.watch(accountProvider);
+    final authState2 = ref.watch(authRecordStateProvider);
+
+    xlog(authState2);
+
+    final doctorAc = authState.whenOrNull(
+      acount: (account) => account.whenOrNull(doctor: (d) => d),
     );
+    if (doctorAc != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _isEditing ? 'تعديل الملف الشخصي' : 'الملف الشخصي للطبيب',
+          ),
+          centerTitle: true,
+          actions: [
+            if (!_isEditing)
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  setState(() {
+                    _isEditing = true;
+                  });
+                },
+              ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: _isEditing
+              ? _buildEditForm(doctorAc)
+              : _buildProfileView(doctorAc),
+        ),
+      );
+    }
+    return Scaffold(body: Text(authState2?.toString() ?? ';'));
   }
 
-  Widget _buildProfileView() {
+  Widget _buildProfileView(Doctor? ac) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Profile Header
-        _buildProfileHeader(),
+        _buildProfileHeader(ac?.fullName),
         const SizedBox(height: 24),
 
         // Personal Information
@@ -135,7 +152,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
     );
   }
 
-  Widget _buildProfileHeader() {
+  Widget _buildProfileHeader(String? name) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -159,18 +176,19 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
               child: const Icon(Icons.person, size: 50, color: Colors.blue),
             ),
             const SizedBox(height: 16),
-    
+
             // Doctor Name
             Text(
-              _editedDoctor.fullName.isNotEmpty
-                  ? _editedDoctor.fullName
-                  : 'الدكتور',
+              name ??
+                  (_editedDoctor.fullName.isNotEmpty
+                      ? _editedDoctor.fullName
+                      : 'الدكتور'),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-    
+
             const SizedBox(height: 8),
-    
+
             // Specialization
             if (_editedDoctor.specialization.isNotEmpty)
               Text(
@@ -182,9 +200,9 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
                 ),
                 textAlign: TextAlign.center,
               ),
-    
+
             const SizedBox(height: 8),
-    
+
             // Hospital
             if (_editedDoctor.hospital.isNotEmpty)
               Text(
@@ -269,17 +287,16 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
     );
   }
 
-  Widget _buildEditForm() {
+  Widget _buildEditForm(Doctor d) {
     return Form(
       key: _formKey,
       child: Column(
         spacing: 20,
         children: [
-
           // Full Name Field
           _buildTextField(
             label: 'الاسم الكامل',
-            value: _editedDoctor.fullName,
+            value: d.fullName,
             icon: Icons.person,
             onChanged: (value) {
               setState(() {
