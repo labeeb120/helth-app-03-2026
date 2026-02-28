@@ -41,7 +41,7 @@ final class AuthRecordStateProvider
   }
 }
 
-String _$authRecordStateHash() => r'46bb383090e89f9b559be59f5aaa6efe5ab576a0';
+String _$authRecordStateHash() => r'7a312fa8295a58697012641b9d1c5ba18d075427';
 
 abstract class _$AuthRecordState extends $Notifier<AuthRecordData> {
   AuthRecordData build();

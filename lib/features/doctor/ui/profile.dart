@@ -44,6 +44,8 @@ class _DoctorProfilePageState extends ConsumerState<DoctorProfilePage> {
     );
     if (doctorAc != null) {
       if (!isInitialized) {
+        xlog('!isInitialized');
+        xlog(doctorAc);
         setState(() {
           _editedDoctor = _editedDoctor.copyWith(
             email: doctorAc.email,

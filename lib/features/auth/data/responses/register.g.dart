@@ -28,6 +28,7 @@ DoctorResponse _$DoctorResponseFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updatedAt'] as String? ?? 'null',
       specialization: json['specialization'] as String?,
       hospital: json['hospital'] as String?,
+      licenseNumber: json['licenseNumber'] as String?,
     );
 
 Map<String, dynamic> _$DoctorResponseToJson(DoctorResponse instance) =>
@@ -41,6 +42,7 @@ Map<String, dynamic> _$DoctorResponseToJson(DoctorResponse instance) =>
       'updatedAt': instance.updatedAt,
       'specialization': instance.specialization,
       'hospital': instance.hospital,
+      'licenseNumber': instance.licenseNumber,
     };
 
 PatientResponse _$PatientResponseFromJson(Map<String, dynamic> json) =>

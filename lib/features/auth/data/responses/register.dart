@@ -22,6 +22,7 @@ class RegisterData {
 class DoctorResponse extends Profile {
   final String? specialization;
   final String? hospital;
+  final String? licenseNumber;
 
   DoctorResponse({
     super.id,
@@ -33,6 +34,7 @@ class DoctorResponse extends Profile {
     super.updatedAt,
     this.specialization,
     this.hospital,
+    this.licenseNumber,
   });
   factory DoctorResponse.fromJson(Map<String, dynamic> json) =>
       _$DoctorResponseFromJson(json);
