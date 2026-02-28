@@ -11,7 +11,7 @@ import 'package:health_app/features/auth/domain/models/patient.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const int version = 20;
+const int version = 22;
 const String appLocalKey = 'appLocalKey$version';
 const String userTokenKey = 'userTokenKey$version';
 //
@@ -24,6 +24,10 @@ const String PHARMACIST_ACCOUNT_KEY = 'pharmacist-account$version';
 const String ADMIN_ACCOUNT_KEY = 'admin-account$version';
 //
 const String AUTH_RECORD_KEY = 'AUTH_RECORD_KEY$version';
+const String MedicalRecordList_Key = 'MedicalRecordList$version';
+const String PrescriptionsList_KEY = 'PrescriptionsList_KEY$version';
+
+// MedicalRecordList
 
 //
 //

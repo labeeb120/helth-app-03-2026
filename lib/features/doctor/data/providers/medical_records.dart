@@ -11,7 +11,7 @@ part 'medical_records.g.dart';
 class MedicalRecordsStore extends _$MedicalRecordsStore {
   @override
   MedicalRecordList build() {
-    final json = di<AppStorage>().getJson('MedicalRecordList');
+    final json = di<AppStorage>().getJson(MedicalRecordList_Key);
     if (json != null) {
       try {
         return MedicalRecordList.fromJson(json);

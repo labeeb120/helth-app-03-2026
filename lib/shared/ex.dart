@@ -54,7 +54,12 @@ void xlog(Object? o) {
 }
 
 extension ToJson on String? {
-  Map<String, dynamic> toJson() => this != null ? jsonDecode(toString()) : null;
+  Map<String, dynamic>? toJson() {
+    if (this != null && toString().isNotEmpty) {
+      return jsonDecode(toString());
+    }
+    return null;
+  }
 }
 
 extension JsEncoder on Map<String, dynamic> {

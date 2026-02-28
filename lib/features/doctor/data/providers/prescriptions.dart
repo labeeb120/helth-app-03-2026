@@ -12,7 +12,7 @@ part 'prescriptions.g.dart';
 class PrescriptionsStore extends _$PrescriptionsStore {
   @override
   PrescriptionsList build() {
-    final s = di<AppStorage>().getString('PrescriptionsList');
+    final s = di<AppStorage>().getString(PrescriptionsList_KEY);
     if (s != null) {
       try {
         final json = jsonDecode(s);
