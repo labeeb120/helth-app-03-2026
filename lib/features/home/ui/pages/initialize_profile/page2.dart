@@ -77,7 +77,9 @@ class _InitializeProfilePage2State
         foregroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => _goBack(),
+          onPressed: () {
+            // _goBack()
+          },
         ),
       ),
       body: SafeArea(

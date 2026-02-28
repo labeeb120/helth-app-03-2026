@@ -1,6 +1,7 @@
 // profile_page.dart
 import 'package:flutter/material.dart';
 import 'package:health_app/features/home/ui/pages/edit_profile.dart';
+import 'package:health_app/shared/widgets/patient/app_bar/return_button.dart';
 import 'package:iconsax/iconsax.dart';
 // import 'package:iconsax/iconsax.dart';
 
@@ -32,22 +33,23 @@ class _ProfilePageState extends State<ProfilePage> {
             },
           ),
         ],
+        leading: ReturnButton(),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             // Profile Header Section
             _buildProfileHeader(),
-            
+
             // Stats Section
             _buildStatsSection(),
-            
+
             // Menu Items Section
             _buildMenuSection(),
-            
+
             // Settings Section
             _buildSettingsSection(),
-            
+
             // Logout Button
             _buildLogoutButton(),
           ],
@@ -82,10 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.blueAccent,
-                    width: 3,
-                  ),
+                  border: Border.all(color: Colors.blueAccent, width: 3),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(60),
@@ -118,10 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: const Icon(
                       Icons.camera_alt,
@@ -136,35 +132,22 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 15),
           const Text(
             'Alex Johnson',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 5),
           Text(
             'alex.johnson@email.com',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.location_on,
-                size: 16,
-                color: Colors.grey[600],
-              ),
+              Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
               const SizedBox(width: 5),
               Text(
                 'San Francisco, CA',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
             ],
           ),
@@ -212,13 +195,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         const SizedBox(height: 5),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
       ],
     );
   }
@@ -244,24 +221,10 @@ class _ProfilePageState extends State<ProfilePage> {
             title: 'Edit Profile',
             onTap: () => _navigateToEditProfile(),
           ),
-          _buildMenuItem(
-            icon: Iconsax.heart,
-            title: 'Favorites',
-            badge: '12',
-          ),
-          _buildMenuItem(
-            icon: Iconsax.shop,
-            title: 'My Orders',
-            badge: '5',
-          ),
-          _buildMenuItem(
-            icon: Iconsax.wallet,
-            title: 'Payment Methods',
-          ),
-          _buildMenuItem(
-            icon: Iconsax.location,
-            title: 'Addresses',
-          ),
+          _buildMenuItem(icon: Iconsax.heart, title: 'Favorites', badge: '12'),
+          _buildMenuItem(icon: Iconsax.shop, title: 'My Orders', badge: '5'),
+          _buildMenuItem(icon: Iconsax.wallet, title: 'Payment Methods'),
+          _buildMenuItem(icon: Iconsax.location, title: 'Addresses'),
         ],
       ),
     );
@@ -280,10 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.blue.withOpacity(0.1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(
-          icon,
-          color: Colors.blue,
-        ),
+        child: Icon(icon, color: Colors.blue),
       ),
       title: Text(title),
       trailing: Row(
@@ -298,17 +258,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               child: Text(
                 badge,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ),
           const SizedBox(width: 10),
-          const Icon(
-            Icons.chevron_right,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.chevron_right, color: Colors.grey),
         ],
       ),
       onTap: onTap,
@@ -408,10 +362,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Icon(Iconsax.logout),
             SizedBox(width: 10),
-            Text(
-              'Log Out',
-              style: TextStyle(fontSize: 16),
-            ),
+            Text('Log Out', style: TextStyle(fontSize: 16)),
           ],
         ),
       ),
@@ -528,10 +479,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pop(context);
                 // Implement logout logic
               },
-              child: const Text(
-                'Log Out',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Log Out', style: TextStyle(color: Colors.red)),
             ),
           ],
         );

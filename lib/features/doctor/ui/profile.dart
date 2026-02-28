@@ -5,9 +5,11 @@ import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:health_app/features/doctor/data/providers/patient_acount.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
+import 'package:health_app/features/home/ui/pages/p.dart' as patientApp;
 // import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:health_app/features/auth/domain/models/patient.dart';
 
@@ -94,8 +96,23 @@ class _DoctorProfilePageState extends ConsumerState<DoctorProfilePage> {
         // Profile Header
         _buildProfileHeader(_editedDoctor.fullName),
         const SizedBox(height: 24),
+        Consumer(
+          builder: (context, ref, _) {
+            final patientAc = ref.watch(patientAccountProvider);
+            xlog(patientAc);
+            return TextButton(
+              onPressed: () {
+                xlog(patientAc);
+                if (patientAc != null) {
+                  ref.read(accountProvider.notifier).changeAccount(patientAc);
+                  context.to(patientApp.HomePage());
+                }
+              },
+              child: Text('login as patient'),
+            );
+          },
+        ),
 
-        // Personal Information
         _buildSection(
           title: 'المعلومات الشخصية',
           children: [

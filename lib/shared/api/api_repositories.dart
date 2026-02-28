@@ -263,7 +263,7 @@ class AppRepositories {
       // for (var s in json.entries) {
       //   s.log('e');
       // }
-      xlog(json);
+      // xlog(json);
 
       final res = PatientProfileResponse.fromJson(json);
 
@@ -292,7 +292,6 @@ class AppRepositories {
 
   Future<ErrorOr<DoctorProfileResponse>> _getDoctorProfile() async {
     try {
-      final json = await api.getDoctorProfile();
       final json2 = await api.activateDoctorAsPatientProfile();
       xlog(json2);
       final res3 = DoctorAsPatientResponse.fromJson(json2);
@@ -302,6 +301,11 @@ class AppRepositories {
           await storage.setUserToken(token);
         }
       }
+      await _getPatientProfile();
+    } catch (e) {}
+
+    try {
+      final json = await api.getDoctorProfile();
 
       final res = DoctorProfileResponse.fromJson(json);
 
@@ -311,12 +315,15 @@ class AppRepositories {
           doctor: Doctor.fromJson(doctor.toJson()),
         );
         await storage.setDoctorAccount(doctorAccount);
+        await _getPatientProfile();
+
         return ErrorOr.success(data: DoctorProfileResponse.fromJson(json));
       }
       throw 'Unkown error';
     } catch (e) {
       debugPrint('Error fetching doctor profile: $e');
     }
+
     return ErrorOr.error(error: ServerError(msg: 'Unkown error'));
   }
 
