@@ -170,10 +170,10 @@ class PharmacistHomePage extends StatelessWidget {
       // Floating Action Button for major task
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final a = await di<AppRepositories>().getDio().get(
-            '/PharmacistDashboard/queue',
-          );
-          xlog(a.data);
+          // final a = await di<AppRepositories>().getDio().get(
+          //   '/PharmacistDashboard/queue',
+          // );
+          // xlog(a.data);
 
           // showDialog(
           //   context: context,
@@ -181,13 +181,13 @@ class PharmacistHomePage extends StatelessWidget {
           //     return CreatePrescriptionDialog();
           //   },
           // );
-          // final result = await Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         CreatePrescriptionPage(patientId: 1, doctorId: 1),
-          //   ),
-          // );
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  CreatePrescriptionPage(patientId: 1, doctorId: 1),
+            ),
+          );
         },
         backgroundColor: const Color(0xFF00796B),
         icon: const Icon(Icons.add),
