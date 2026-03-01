@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/accounts_provider.dart';
-import 'package:health_app/auth_state.dart';
 import 'package:health_app/features/pharmacist/data/providers/prescription_queu.dart';
 import 'package:health_app/features/pharmacist/domain/models/prescription.dart';
-import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
 
 import 'create_dialog.dart';
@@ -58,15 +56,22 @@ class PharmacistHomePage extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                _StatWidget(label: "Pending", value: "12"),
-                                _StatWidget(label: "Dispensed", value: "48"),
+                                _StatWidget(
+                                  label: 'pharmacyName ',
+                                  value: pharmacist?.pharmacyName ?? '',
+                                ),
+                                _StatWidget(
+                                  label: 'licenseNumber',
+                                  value: pharmacist?.licenseNumber ?? '',
+                                ),
                                 // _StatWidget(label: "Inventory", value: "Low"),
                               ],
                             ),
+                            SizedBox(height: 30),
                           ],
                         );
                       },
@@ -230,13 +235,13 @@ class _StatWidget extends StatelessWidget {
           value,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70, fontSize: 14),
+          style: const TextStyle(color: Colors.white70, fontSize: 10),
         ),
       ],
     );
