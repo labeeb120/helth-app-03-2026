@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Consumer;
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor, Pharmacist;
@@ -130,6 +131,17 @@ class _PharmacistProfilePageState extends State<PharmacistProfilePage> {
               value: _formatDate(_editedPharmacist.updatedAt),
             ),
           ],
+        ),
+        Consumer(
+          builder: (context, ref, _) {
+            return ElevatedButton(
+              onPressed: () async {
+                await ref.read(authRecordStateProvider.notifier).logOut();
+                Navigator.of(context).maybePop();
+              },
+              child: Text('logout'),
+            );
+          },
         ),
       ],
     );
