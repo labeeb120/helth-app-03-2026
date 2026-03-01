@@ -1,52 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show
-        Consumer,
-        ProviderListenableSelect,
-        ConsumerWidget,
-        WidgetRef,
-        ConsumerState,
-        ConsumerStatefulWidget;
-import 'package:health_app/accounts_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Consumer;
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
-    show Pharmacist;
+    show Doctor, Pharmacist;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/features/pharmacist/data/requests/profile.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
-import 'package:health_app/shared/functions.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
-
 // import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:health_app/features/auth/domain/models/patient.dart';
-class PharmacistProfilePage1 extends ConsumerWidget {
-  const PharmacistProfilePage1({super.key});
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final account = ref.watch(allAcountsProvider.select((s) => s.pharmacist));
-    final pharmacist = account?.pharmacist;
-    if (pharmacist != null) {
-      return PharmacistProfilePage(pharmacist: pharmacist);
-    }
-    return Scaffold(body: Column(children: [CircularProgressIndicator()]));
-    // return Container();
-  }
-}
-
-class PharmacistProfilePage extends ConsumerStatefulWidget {
+class PharmacistProfilePage extends StatefulWidget {
   final Pharmacist pharmacist;
 
   const PharmacistProfilePage({super.key, required this.pharmacist});
 
   @override
-  ConsumerState<PharmacistProfilePage> createState() =>
-      _PharmacistProfilePageState();
+  State<PharmacistProfilePage> createState() => _PharmacistProfilePageState();
 }
 
-class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
+class _PharmacistProfilePageState extends State<PharmacistProfilePage> {
   bool _isEditing = false;
-  // bool _isInitialized = false;
   late Pharmacist _editedPharmacist;
   final _formKey = GlobalKey<FormState>();
 
@@ -54,7 +28,6 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
   void initState() {
     super.initState();
     _editedPharmacist = widget.pharmacist;
-    // _isInitialized = true;
   }
 
   @override
@@ -78,169 +51,6 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: _isEditing ? _buildEditForm() : _buildProfileView(),
-      ),
-    );
-  }
-
-  Widget _buildEditForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        spacing: 20,
-        children: [
-          // Full Name Field
-          _buildTextField(
-            label: 'الاسم الكامل',
-            value: _editedPharmacist.fullName,
-            icon: Icons.person,
-            onChanged: (value) {
-              setState(() {
-                _editedPharmacist = _editedPharmacist.copyWith(fullName: value);
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الرجاء إدخال الاسم الكامل';
-              }
-              return null;
-            },
-          ),
-
-          // // Specialization Field
-
-          // Phone Number Field
-          _buildTextField(
-            label: 'رقم الهاتف',
-            value: _editedPharmacist.phoneNumber,
-            icon: Icons.phone,
-            keyboardType: TextInputType.phone,
-            onChanged: (value) {
-              setState(() {
-                _editedPharmacist = _editedPharmacist.copyWith(
-                  phoneNumber: value,
-                );
-              });
-            },
-            validator: phoneNumberValidator,
-          ),
-
-          // Email Field
-          _buildTextField(
-            label: 'البريد الإلكتروني',
-            value: _editedPharmacist.email,
-            icon: Icons.email,
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (value) {
-              setState(() {
-                _editedPharmacist = _editedPharmacist.copyWith(email: value);
-              });
-            },
-            validator: emailValidator,
-          ),
-          _buildTextField(
-            label: 'التخصص',
-            value: _editedPharmacist.specialization,
-            icon: Icons.medical_services,
-            onChanged: (value) {
-              setState(() {
-                _editedPharmacist = _editedPharmacist.copyWith(
-                  specialization: value,
-                );
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الرجاء إدخال التخصص';
-              }
-              return null;
-            },
-          ),
-
-          // License Number Field
-          _buildTextField(
-            label: 'رقم الرخصة',
-            value: _editedPharmacist.licenseNumber,
-            icon: Icons.badge,
-            onChanged: (value) {
-              setState(() {
-                _editedPharmacist = _editedPharmacist.copyWith(
-                  licenseNumber: value,
-                );
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الرجاء إدخال رقم الرخصة';
-              }
-              return null;
-            },
-          ),
-
-          // Pharmaciy Field
-          _buildTextField(
-            label: 'الصيدلية',
-            value: _editedPharmacist.pharmacyName,
-            icon: Icons.local_pharmacy,
-            onChanged: (value) {
-              setState(() {
-                _editedPharmacist = _editedPharmacist.copyWith(
-                  pharmacyName: value,
-                );
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الرجاء إدخال اسم الصيدلية';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Save changes here
-                      // You would typically call an API to update the doctor profile
-                      _saveChanges();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.green,
-                  ),
-                  child: const Text(
-                    'حفظ التغييرات',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isEditing = false;
-                      _editedPharmacist = widget.pharmacist; // Reset changes
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Colors.red),
-                  ),
-                  child: const Text(
-                    'إلغاء',
-                    style: TextStyle(fontSize: 16, color: Colors.red),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -281,11 +91,11 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
         _buildSection(
           title: 'المعلومات المهنية',
           children: [
-            _buildInfoItem(
-              icon: Icons.medical_services,
-              label: 'التخصص',
-              value: _editedPharmacist.specialization,
-            ),
+            // _buildInfoItem(
+            //   icon: Icons.medical_services,
+            //   label: 'التخصص',
+            //   value: _editedPharmacist.,
+            // ),
             _buildInfoItem(
               icon: Icons.badge,
               label: 'رقم الرخصة',
@@ -471,6 +281,183 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
     );
   }
 
+  Widget _buildEditForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        spacing: 20,
+        children: [
+          // Full Name Field
+          _buildTextField(
+            label: 'الاسم الكامل',
+            value: _editedPharmacist.fullName,
+            icon: Icons.person,
+            onChanged: (value) {
+              setState(() {
+                _editedPharmacist = _editedPharmacist.copyWith(fullName: value);
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'الرجاء إدخال الاسم الكامل';
+              }
+              return null;
+            },
+          ),
+
+          // // Specialization Field
+          // _buildTextField(
+          //   label: 'التخصص',
+          //   value: _editedPharmacist.specialization,
+          //   icon: Icons.medical_services,
+          //   onChanged: (value) {
+          //     setState(() {
+          //       _editedPharmacist = _editedPharmacist.copyWith(specialization: value);
+          //     });
+          //   },
+          //   validator: (value) {
+          //     if (value == null || value.isEmpty) {
+          //       return 'الرجاء إدخال التخصص';
+          //     }
+          //     return null;
+          //   },
+          // ),
+
+          // Phone Number Field
+          _buildTextField(
+            label: 'رقم الهاتف',
+            value: _editedPharmacist.phoneNumber,
+            icon: Icons.phone,
+            keyboardType: TextInputType.phone,
+            onChanged: (value) {
+              setState(() {
+                _editedPharmacist = _editedPharmacist.copyWith(
+                  phoneNumber: value,
+                );
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'الرجاء إدخال رقم الهاتف';
+              }
+              if (!RegExp(r'^[0-9]{10,15}$').hasMatch(value)) {
+                return 'رقم الهاتف غير صالح';
+              }
+              return null;
+            },
+          ),
+
+          // Email Field
+          _buildTextField(
+            label: 'البريد الإلكتروني',
+            value: _editedPharmacist.email,
+            icon: Icons.email,
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (value) {
+              setState(() {
+                _editedPharmacist = _editedPharmacist.copyWith(email: value);
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'الرجاء إدخال البريد الإلكتروني';
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                return 'البريد الإلكتروني غير صالح';
+              }
+              return null;
+            },
+          ),
+
+          // License Number Field
+          _buildTextField(
+            label: 'رقم الرخصة',
+            value: _editedPharmacist.licenseNumber,
+            icon: Icons.badge,
+            onChanged: (value) {
+              setState(() {
+                _editedPharmacist = _editedPharmacist.copyWith(
+                  licenseNumber: value,
+                );
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'الرجاء إدخال رقم الرخصة';
+              }
+              return null;
+            },
+          ),
+
+          // Pharmaciy Field
+          _buildTextField(
+            label: 'الصيدلية',
+            value: _editedPharmacist.pharmacyName,
+            icon: Icons.local_pharmacy,
+            onChanged: (value) {
+              setState(() {
+                _editedPharmacist = _editedPharmacist.copyWith(
+                  pharmacyName: value,
+                );
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'الرجاء إدخال اسم الصيدلية';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+
+          // Action Buttons
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // Save changes here
+                      // You would typically call an API to update the doctor profile
+                      _saveChanges();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text(
+                    'حفظ التغييرات',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isEditing = false;
+                      _editedPharmacist = widget.pharmacist; // Reset changes
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: const BorderSide(color: Colors.red),
+                  ),
+                  child: const Text(
+                    'إلغاء',
+                    style: TextStyle(fontSize: 16, color: Colors.red),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTextField({
     required String label,
     required String value,
@@ -525,15 +512,16 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
       a.when(
         error: (error) {},
         success: (data) {
-          AppDialog()
-              .show(
-                title: 'Good',
-                message: "تم الحفض بنجاح!!",
-                type: DialogType.success,
-              )
-              .whenComplete(() {
-                ref.invalidate(allAcountsProvider);
-              });
+          AppDialog().show(
+            title: 'Good',
+            message: "تم الحفض بنجاح!!",
+            type: DialogType.success,
+          );
+          setState(() {
+            _editedPharmacist = Pharmacist.fromJson(
+              data?.toJson() ?? _editedPharmacist.toJson(),
+            );
+          });
         },
       );
 

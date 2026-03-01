@@ -77,6 +77,7 @@ _Pharmacist _$PharmacistFromJson(Map<String, dynamic> json) => _Pharmacist(
   pharmacyName: json['pharmacyName'] as String? ?? '-',
   licenseNumber: json['licenseNumber'] as String? ?? '-',
   createdAt: json['createdAt'] as String? ?? '-',
+  specialization: json['specialization'] as String? ?? '-',
   updatedAt: json['updatedAt'] as String? ?? '-',
 );
 
@@ -90,6 +91,7 @@ Map<String, dynamic> _$PharmacistToJson(_Pharmacist instance) =>
       'pharmacyName': instance.pharmacyName,
       'licenseNumber': instance.licenseNumber,
       'createdAt': instance.createdAt,
+      'specialization': instance.specialization,
       'updatedAt': instance.updatedAt,
     };
 

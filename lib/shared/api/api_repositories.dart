@@ -424,6 +424,7 @@ class AppRepositories {
       if (response.success.isN() && response.pharmacist != null) {
         // Refresh profile after update
         // await _getPharmacistProfile();
+
         return ErrorOr.success(
           data: Pharmacist.fromJson(response.pharmacist!.toJson()),
         );

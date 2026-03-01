@@ -3,8 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'patient.freezed.dart';
 part 'patient.g.dart';
 
-
-
 @freezed
 abstract class Patient with _$Patient {
   factory Patient({
@@ -29,16 +27,16 @@ abstract class Patient with _$Patient {
       _$PatientFromJson(json);
 }
 
-    // "id": 0,
-    // "userId": 0,
-    // "fullName": "string",
-    // "specialization": "string",
-    // "licenseNumber": "string",
-    // "hospital": "string",
-    // "phoneNumber": "string",
-    // "email": "string",
-    // "createdAt": "2025-12-16T19:49:28.853Z",
-    // "updatedAt": "2025-12-16T19:49:28.853Z"
+// "id": 0,
+// "userId": 0,
+// "fullName": "string",
+// "specialization": "string",
+// "licenseNumber": "string",
+// "hospital": "string",
+// "phoneNumber": "string",
+// "email": "string",
+// "createdAt": "2025-12-16T19:49:28.853Z",
+// "updatedAt": "2025-12-16T19:49:28.853Z"
 @freezed
 abstract class Doctor with _$Doctor {
   factory Doctor({
@@ -54,23 +52,20 @@ abstract class Doctor with _$Doctor {
     @Default('') String updatedAt,
   }) = _Doctor;
 
-  factory Doctor.fromJson(Map<String, dynamic> json) =>
-      _$DoctorFromJson(json);
+  factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);
 }
-
-
 
 @freezed
 abstract class Pharmacist with _$Pharmacist {
-    //   "id": 0,
-    // "userId": 0,
-    // "fullName": "string",
-    // "licenseNumber": "string",
-    // "pharmacyName": "string",
-    // "phoneNumber": "string",
-    // "email": "string",
-    // "createdAt": "2025-12-16T20:17:25.204Z",
-    // "updatedAt": "2025-12-16T20:17:25.204Z"
+  //   "id": 0,
+  // "userId": 0,
+  // "fullName": "string",
+  // "licenseNumber": "string",
+  // "pharmacyName": "string",
+  // "phoneNumber": "string",
+  // "email": "string",
+  // "createdAt": "2025-12-16T20:17:25.204Z",
+  // "updatedAt": "2025-12-16T20:17:25.204Z"
   factory Pharmacist({
     @Default(0) int id,
     @Default(0) int userId,
@@ -80,14 +75,13 @@ abstract class Pharmacist with _$Pharmacist {
     @Default('-') String pharmacyName,
     @Default('-') String licenseNumber,
     @Default('-') String createdAt,
+    @Default('-') String specialization,
     @Default('-') String updatedAt,
   }) = _Pharmacist;
 
   factory Pharmacist.fromJson(Map<String, dynamic> json) =>
       _$PharmacistFromJson(json);
 }
-
-
 
 @freezed
 abstract class Admin with _$Admin {
@@ -109,7 +103,5 @@ abstract class Admin with _$Admin {
     @Default('') String updatedAt,
   }) = _Admin;
 
-  factory Admin.fromJson(Map<String, dynamic> json) =>
-      _$AdminFromJson(json);
+  factory Admin.fromJson(Map<String, dynamic> json) => _$AdminFromJson(json);
 }
-
