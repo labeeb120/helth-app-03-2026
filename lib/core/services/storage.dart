@@ -11,7 +11,7 @@ import 'package:health_app/features/auth/domain/models/patient.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const int version = 25;
+const int version = 26;
 const String appLocalKey = 'appLocalKey$version';
 const String userTokenKey = 'userTokenKey$version';
 const String userRefreshTokenKey = 'userRefreshTokenKey$version';

@@ -3,6 +3,24 @@
 part of 'prescriptions.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_PrescriptionList _$PrescriptionListFromJson(Map<String, dynamic> json) =>
+    _PrescriptionList(
+      prescriptions: (json['prescriptions'] as List<dynamic>)
+          .map((e) => Prescription.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      patientCode: json['patientCode'] as String?,
+    );
+
+Map<String, dynamic> _$PrescriptionListToJson(_PrescriptionList instance) =>
+    <String, dynamic>{
+      'prescriptions': instance.prescriptions,
+      'patientCode': instance.patientCode,
+    };
+
+// **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
@@ -13,7 +31,7 @@ part of 'prescriptions.dart';
 const prescriptionsProvider = PrescriptionsProvider._();
 
 final class PrescriptionsProvider
-    extends $NotifierProvider<Prescriptions, List<Prescription>> {
+    extends $NotifierProvider<Prescriptions, PrescriptionList> {
   const PrescriptionsProvider._()
     : super(
         from: null,
@@ -33,28 +51,28 @@ final class PrescriptionsProvider
   Prescriptions create() => Prescriptions();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Prescription> value) {
+  Override overrideWithValue(PrescriptionList value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<List<Prescription>>(value),
+      providerOverride: $SyncValueProvider<PrescriptionList>(value),
     );
   }
 }
 
-String _$prescriptionsHash() => r'43ae219fb43ea37062c0e43fc81d7ac6d6353b93';
+String _$prescriptionsHash() => r'e0198e276fbaadeb1c10b8fe22bb756b11f2f5e3';
 
-abstract class _$Prescriptions extends $Notifier<List<Prescription>> {
-  List<Prescription> build();
+abstract class _$Prescriptions extends $Notifier<PrescriptionList> {
+  PrescriptionList build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Prescription>, List<Prescription>>;
+    final ref = this.ref as $Ref<PrescriptionList, PrescriptionList>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<List<Prescription>, List<Prescription>>,
-              List<Prescription>,
+              AnyNotifier<PrescriptionList, PrescriptionList>,
+              PrescriptionList,
               Object?,
               Object?
             >;

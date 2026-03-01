@@ -12,6 +12,7 @@ import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 import 'package:health_app/shared/widgets/dialog/single_input_dialog.dart';
 
+import '../../data/responses/prescription.dart' show PrescriptionsResponse;
 import '../../domain/models/prescription.dart'
     show
         Prescription,
@@ -28,7 +29,7 @@ class PrescriptionsPage extends ConsumerStatefulWidget {
 }
 
 class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
-  void _handleSearchPress() async {
+  void _handleSearchPress(WidgetRef ref) async {
     final id = await showDialog(
       context: context,
       builder: (context) => const SingleInputDialog(
@@ -46,7 +47,7 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
         success: (data) {
           ref
               .read(prescriptionsProvider.notifier)
-              .setPrescriptions(data.prescriptions);
+              .setPrescriptions(data.prescriptions, code: id);
         },
         error: (e) {
           AppDialog().show(
@@ -61,7 +62,8 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final prescriptions = ref.watch(prescriptionsProvider);
+    final prescriptionList = ref.watch(prescriptionsProvider);
+    final prescriptions = prescriptionList.prescriptions;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -70,7 +72,7 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
         centerTitle: false,
         actions: [
           IconButton(
-            onPressed: () => ref.refresh(prescriptionsProvider),
+            onPressed: () => ref.read(prescriptionsProvider.notifier).refresh(),
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -78,7 +80,10 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
       body: prescriptions.isEmpty
           ? _buildEmptyState()
           : RefreshIndicator(
-              onRefresh: () async => ref.refresh(prescriptionsProvider),
+              onRefresh: () async {
+                ref.read(prescriptionsProvider.notifier).refresh();
+                xlog('sssssssssssssssssssssss');
+              },
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: prescriptions.length,
@@ -86,11 +91,17 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
                     PrescriptionCard(prescription: prescriptions[index]),
               ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _handleSearchPress,
-        label: const Text('Search ID'),
-        icon: const Icon(Icons.search),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      floatingActionButton: Consumer(
+        builder: (context, ref, _) {
+          return FloatingActionButton.extended(
+            onPressed: () => _handleSearchPress(ref),
+            label: const Text('Search ID'),
+            icon: const Icon(Icons.search),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          );
+        },
       ),
     );
   }
@@ -261,95 +272,81 @@ class PrescriptionCard extends StatelessWidget {
   }
 
   Widget _buildPopupMenu(BuildContext context) {
-    return PopupMenuButton(
-      icon: const Icon(Icons.more_vert),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onSelected: (val) {
-        if (val == 'check') _handleInteractionCheck(context);
-        if (val == 'change-status') _handleChangestatus(context);
-      },
-      itemBuilder: (context) => [
-        const PopupMenuItem(
-          value: 'check',
-          child: ListTile(
-            leading: Icon(Icons.security, color: Colors.green),
-            title: Text("Drug Interactions"),
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
-        const PopupMenuItem(
-          value: 'change-status',
-          child: ListTile(
-            leading: Icon(Icons.security, color: Colors.green),
-            title: Text("Change Status"),
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
-        const PopupMenuItem(
-          value: 'delete',
-          child: ListTile(
-            leading: Icon(Icons.delete_outline, color: Colors.red),
-            title: Text("Remove", style: TextStyle(color: Colors.red)),
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _handleChangestatus(BuildContext context) async {
-    // 1. Show the confirmation dialog and wait for the boolean result
-    final bool? confirm = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.orange),
-              SizedBox(width: 8),
-              Text("Confirm Update"),
-            ],
-          ),
-          content: const Text(
-            "Are you sure you want to change the status of this prescription?",
-          ),
+    return Consumer(
+      builder: (context, ref, _) {
+        return PopupMenuButton(
+          icon: const Icon(Icons.more_vert),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(
-                dialogContext,
-              ).pop(false), // Return false on cancel
-              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          onSelected: (val) {
+            if (val == 'check') _handleInteractionCheck(context);
+            if (val == 'change-status') _handleChangestatus(context, ref);
+          },
+          itemBuilder: (context) => [
+            const PopupMenuItem(
+              value: 'check',
+              child: ListTile(
+                leading: Icon(Icons.security, color: Colors.green),
+                title: Text("Drug Interactions"),
+                contentPadding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
             ),
-            FilledButton(
-              onPressed: () => Navigator.of(
-                dialogContext,
-              ).pop(true), // Return true on confirm
-              child: const Text("Confirm"),
+            const PopupMenuItem(
+              value: 'change-status',
+              child: ListTile(
+                leading: Icon(Icons.security, color: Colors.green),
+                title: Text("Change Status"),
+                contentPadding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'delete',
+              child: ListTile(
+                leading: Icon(Icons.delete_outline, color: Colors.red),
+                title: Text("Remove", style: TextStyle(color: Colors.red)),
+                contentPadding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
             ),
           ],
         );
       },
     );
+  }
 
-    // 2. If the user clicked 'Confirm', execute your logic
-    if (confirm == true) {
+  void _handleChangestatus(BuildContext context, WidgetRef ref) async {
+    // 1. Show the extracted dialog and await the result
+    final int? selectedStatusId = await showDialog<int>(
+      context: context,
+      builder: (context) =>
+          ChangeStatusDialog(currentStatus: prescription.status),
+    );
+
+    // 2. Process the result if the user didn't cancel
+    if (selectedStatusId != null) {
+      // Ignore if the status wasn't actually changed
+      if (selectedStatusId == prescription.status) return;
+
       AppDialog().loading();
 
       try {
-        // TODO: Replace with your actual repository call
-        // final res = await di<AppRepositories>().updatePrescriptionStatus(prescription.id);
+        // Send the PUT request with the selected integer status ID
+        final res = await di<AppRepositories>().getDio().put(
+          '/Pharmacist/prescription-status',
+          data: {"prescriptionId": prescription.id, "status": selectedStatusId},
+        );
+        xlog(res.data);
+        final a = PrescriptionsResponse.fromJson(res.data);
 
-        await Future.delayed(const Duration(seconds: 1)); // Simulated delay
+        if (a.success ?? false) {
+          ref.read(prescriptionsProvider.notifier).refresh();
+        }
 
         AppDialog().dismiss();
 
-        // Optional: Show success snackbar
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -357,6 +354,9 @@ class PrescriptionCard extends StatelessWidget {
               backgroundColor: Colors.green,
             ),
           );
+
+          // Optional: If you are using Riverpod, refresh the list here to reflect the changes immediately
+          // ref.refresh(prescriptionsProvider);
         }
       } catch (e) {
         AppDialog().dismiss();
@@ -416,6 +416,87 @@ class PrescriptionCard extends StatelessWidget {
     //   },
     //   error: (e) => xlog(e),
     // );
+  }
+}
+
+class ChangeStatusDialog extends StatefulWidget {
+  final int currentStatus;
+
+  const ChangeStatusDialog({super.key, required this.currentStatus});
+
+  @override
+  State<ChangeStatusDialog> createState() => _ChangeStatusDialogState();
+}
+
+class _ChangeStatusDialogState extends State<ChangeStatusDialog> {
+  late int _selectedStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the selection with the current prescription status
+    _selectedStatus = widget.currentStatus;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Row(
+        children: [
+          Icon(Icons.update, color: Colors.blue),
+          SizedBox(width: 8),
+          Text("Update Status"),
+        ],
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildRadioOption(1, 'Pending'),
+              _buildRadioOption(2, 'Dispensed'),
+              _buildRadioOption(3, 'Partial Dispensed'),
+              _buildRadioOption(4, 'Canceled'),
+              _buildRadioOption(5, 'In Review'),
+              _buildRadioOption(6, 'Need Consultation'),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () =>
+              Navigator.of(context).pop(null), // Cancel returns null
+          child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(
+            context,
+          ).pop(_selectedStatus), // Update returns the selected ID
+          child: const Text("Update"),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRadioOption(int value, String title) {
+    return RadioListTile<int>(
+      title: Text(title),
+      value: value,
+      groupValue: _selectedStatus,
+      contentPadding: EdgeInsets.zero,
+      dense: true,
+      activeColor: Theme.of(context).colorScheme.primary,
+      onChanged: (int? newValue) {
+        if (newValue != null) {
+          setState(() {
+            _selectedStatus = newValue;
+          });
+        }
+      },
+    );
   }
 }
 
