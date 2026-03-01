@@ -6,9 +6,11 @@ class SingleInputDialog extends StatefulWidget {
     super.key,
     required this.title,
     required this.label,
+    this.initialValue,
   });
   final String title;
   final String label;
+  final String? initialValue;
 
   @override
   State<SingleInputDialog> createState() => _SingleInputDialogState();
@@ -26,15 +28,23 @@ class _SingleInputDialogState extends State<SingleInputDialog> {
     super.dispose();
   }
 
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
+      _controller.text = widget.initialValue!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title:  Text(widget.title),
+      title: Text(widget.title),
       content: TextField(
         controller: _controller,
         autofocus: true,
+
         decoration: InputDecoration(
           labelText: widget.label,
           prefixIcon: const Icon(Icons.search),

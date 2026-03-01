@@ -35,6 +35,7 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
       builder: (context) => const SingleInputDialog(
         label: 'Prescription ID',
         title: 'Search Prescription',
+        initialValue: 'pm-ea3e5492',
       ),
     );
 
@@ -376,8 +377,13 @@ class PrescriptionCard extends StatelessWidget {
     );
     AppDialog().dismiss();
     showMessage() {
-      // TODO show snackbar success message
+      AppDialog().show(
+        title: 'Good',
+        message: "تم الحفض بنجاح!!",
+        type: DialogType.success,
+      );
     }
+
     void callOnSubmit() async {
       final a = await showDialog(
         context: context,
