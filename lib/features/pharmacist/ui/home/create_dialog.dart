@@ -46,7 +46,10 @@ class CreatePrescriptionPage extends ConsumerWidget {
             .whenComplete(whenComplete);
       } else {
         // } catch (e) {
-        AppDialog().show(type: DialogType.error, message: res2.message??'server error');
+        AppDialog().show(
+          type: DialogType.error,
+          message: res2.message ?? 'server error',
+        );
       }
       // }
     } catch (e) {
@@ -369,27 +372,30 @@ class _HeaderWidgetState extends State<_HeaderWidget> {
             Expanded(
               child: GestureDetector(
                 onTap: _handelOnPatientSearch,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Patient',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 4),
-                    Flexible(
-                      child: Text(
-                        widget.patient.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
+                child: Container(
+                  color: Colors.red,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Patient',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Flexible(
+                        child: Text(
+                          widget.patient.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

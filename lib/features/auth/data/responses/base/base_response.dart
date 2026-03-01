@@ -1,5 +1,6 @@
 // import 'package:json_annotation/json_annotation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+part 'base_response.g.dart';
 
 abstract class BaseResponse {
   final bool? success;
