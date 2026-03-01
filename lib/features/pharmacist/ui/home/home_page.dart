@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_app/auth_state.dart';
+import 'package:health_app/features/pharmacist/data/providers/prescription_queu.dart';
+import 'package:health_app/features/pharmacist/domain/models/prescription.dart';
+import 'package:health_app/shared/api/api_repositories.dart';
+import 'package:health_app/shared/ex.dart';
 
 import 'create_dialog.dart';
 
@@ -121,43 +127,67 @@ class PharmacistHomePage extends StatelessWidget {
             ),
           ),
 
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                child: ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.person)),
-                  title: Text("Patient #${1024 + index}"),
-                  subtitle: const Text("3 Items • High Priority"),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
-                ),
-              ),
-              childCount: 5,
+          // Extra padding at bottom
+          SliverToBoxAdapter(
+            child: Consumer(
+              builder: (context, ref, child) {
+                final data = ref.watch(prescriptionQueueProvider);
+                return data.when(
+                  data: (d) {
+                    xlog(d.toString());
+                    return Column(
+                      children: List.generate(d.length, (index) {
+                        return ListTile(
+                          leading: const CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                          title: Text(
+                            d[index].patientName ?? 'no Patient name',
+                          ),
+                          subtitle: Text("item count ${d[index].itemCount}"),
+                          trailing: Text(
+                            getPrescriptionStatusString(d[index].status ?? 1),
+                          ),
+                          onTap: () {},
+                        );
+                      }),
+                    );
+                  },
+                  error: (e, s) => Center(child: Text('error ${e.toString()}')),
+                  loading: () => Center(child: CircularProgressIndicator()),
+                );
+                //
+                // return
+              },
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 80)),
 
-          // Extra padding at bottom
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          // SliverToBoxAdapter(child: Text('data')),
         ],
       ),
 
       // Floating Action Button for major task
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
+          final a = await di<AppRepositories>().getDio().get(
+            '/PharmacistDashboard/queue',
+          );
+          xlog(a.data);
+
           // showDialog(
           //   context: context,
           //   builder: (context) {
           //     return CreatePrescriptionDialog();
           //   },
           // );
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  CreatePrescriptionPage(patientId: 1, doctorId: 1),
-            ),
-          );
+          // final result = await Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) =>
+          //         CreatePrescriptionPage(patientId: 1, doctorId: 1),
+          //   ),
+          // );
         },
         backgroundColor: const Color(0xFF00796B),
         icon: const Icon(Icons.add),

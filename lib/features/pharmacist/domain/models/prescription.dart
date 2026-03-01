@@ -56,38 +56,44 @@ enum PrescriptionStatusEnum {
   needConsoultation,
 }
 
-extension PrescriptionStatus on Prescription {
-  PrescriptionStatusEnum getStatus() {
-    switch (status) {
-      case 2:
-        return PrescriptionStatusEnum.dispensed;
-      case 3:
-        return PrescriptionStatusEnum.partialDispensed;
-      case 4:
-        return PrescriptionStatusEnum.canceled;
-      case 5:
-        return PrescriptionStatusEnum.inReview;
-      case 6:
-        return PrescriptionStatusEnum.needConsoultation;
-      default:
-        return PrescriptionStatusEnum.pending;
-    }
+PrescriptionStatusEnum getPrescriptionStatus(int s) {
+  switch (s) {
+    case 2:
+      return PrescriptionStatusEnum.dispensed;
+    case 3:
+      return PrescriptionStatusEnum.partialDispensed;
+    case 4:
+      return PrescriptionStatusEnum.canceled;
+    case 5:
+      return PrescriptionStatusEnum.inReview;
+    case 6:
+      return PrescriptionStatusEnum.needConsoultation;
+    default:
+      return PrescriptionStatusEnum.pending;
   }
+}
+
+String getPrescriptionStatusString(int s) {
+  switch (s) {
+    case 2:
+      return 'dispensed';
+    case 3:
+      return 'partialDispensed';
+    case 4:
+      return 'canceled';
+    case 5:
+      return 'inReview';
+    case 6:
+      return 'needConsoultation';
+    default:
+      return 'pending';
+  }
+}
+
+extension PrescriptionStatus on Prescription {
+  PrescriptionStatusEnum getStatus() => getPrescriptionStatus(status);
 
   String getStatusString() {
-    switch (status) {
-      case 2:
-        return 'dispensed';
-      case 3:
-        return 'partialDispensed';
-      case 4:
-        return 'canceled';
-      case 5:
-        return 'inReview';
-      case 6:
-        return 'needConsoultation';
-      default:
-        return 'pending';
-    }
+    return getPrescriptionStatusString(status);
   }
 }
