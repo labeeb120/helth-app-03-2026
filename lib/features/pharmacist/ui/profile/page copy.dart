@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Consumer;
 import 'package:health_app/auth_state.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor, Pharmacist;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
@@ -503,7 +504,7 @@ class _PharmacistProfilePageState extends State<PharmacistProfilePage> {
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
-      final a = await di<AppRepositories>().updatePharmacistProfile(
+      final a = await appRepo.updatePharmacistProfile(
         PharmacistProfileRequestData.fromJson(_editedPharmacist.toJson()),
       );
 

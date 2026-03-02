@@ -73,7 +73,7 @@ class SplashPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(accountProvider);
-    xlog('auth ${auth.toString()}');
+    // xlog('auth ${auth.toString()}');
 
     // auth.log('auth ');
     return auth.when(

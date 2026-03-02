@@ -48,4 +48,4 @@ final class PrescriptionQueueProvider
   }
 }
 
-String _$prescriptionQueueHash() => r'ee636015414b341c73a424d631c629ce4acf1e18';
+String _$prescriptionQueueHash() => r'f28ca7f03ad43274c95be0e2e3466620312d8260';

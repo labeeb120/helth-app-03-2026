@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart' show di;
 import 'package:health_app/core/constants/_all.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/pharmacist/data/providers/prescriptions.dart'
     show prescriptionsProvider;
 import 'package:health_app/features/pharmacist/data/requests/dispense_prescription.dart'
@@ -397,7 +398,7 @@ class _SubmitPrescriptionDialogState
                   );
                   try {
                     AppDialog().loading();
-                    final res = await di<AppRepositories>().getDio().post(
+                    final res = await appRepo.getDio().post(
                       '/Pharmacist/dispense-prescription',
                       data: request.toJson(),
                     );

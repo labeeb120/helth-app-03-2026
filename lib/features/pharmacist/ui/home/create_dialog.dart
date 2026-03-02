@@ -686,7 +686,7 @@ class _MedicationsWidgetState extends State<_MedicationsWidget> {
                             );
                             final data = res.data;
                             // xlog(data.toString());
-                            xlog(data.runtimeType);
+                            // xlog(data.runtimeType);
                             if (data.runtimeType == List) {
                               final d = (data as List<dynamic>)
                                   .map(

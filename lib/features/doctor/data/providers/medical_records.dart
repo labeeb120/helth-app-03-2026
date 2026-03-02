@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/services/storage.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/doctor/data/requests/medical_record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,7 +12,7 @@ part 'medical_records.g.dart';
 class MedicalRecordsStore extends _$MedicalRecordsStore {
   @override
   MedicalRecordList build() {
-    final json = di<AppStorage>().getJson(MedicalRecordList_Key);
+    final json = appStorage.getJson(MedicalRecordList_Key);
     if (json != null) {
       try {
         return MedicalRecordList.fromJson(json);

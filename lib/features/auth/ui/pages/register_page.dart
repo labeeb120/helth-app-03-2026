@@ -6,6 +6,7 @@ import 'package:health_app/core/constants/k.dart';
 import 'package:health_app/core/constants/app_colors.dart' show AppColors;
 import 'package:health_app/core/constants/app_layout.dart';
 import 'package:health_app/core/router/app_routes.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/data/requests/doctor.dart';
 import 'package:health_app/features/auth/data/requests/patient.dart';
 import 'package:health_app/features/auth/data/requests/pharmacist.dart';
@@ -169,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _emailController.text,
     );
 
-    return await di<AppRepositories>().registerPatient(data.toJson());
+    return await appRepo.registerPatient(data.toJson());
   }
 
   Future<ErrorOr<GeneralResponse>> _registerDoctor() async {
@@ -187,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // licenseDocumentUrl: licenseDocumentUrlController.text,
     );
 
-    return await di<AppRepositories>().registerDoctor(data);
+    return await appRepo.registerDoctor(data);
   }
 
   Future<ErrorOr<GeneralResponse>> _registerPharmacist() async {
@@ -206,7 +207,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     // xlog(_selectedLicenseFile?.path ?? '');
 
-    return await di<AppRepositories>().registerPharmacist(data);
+    return await appRepo.registerPharmacist(data);
   }
 
   void _onLoginInested() {

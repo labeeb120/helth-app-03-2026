@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart'
         ConsumerStatefulWidget;
 import 'package:health_app/accounts_provider.dart';
 import 'package:health_app/auth_state.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Pharmacist;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
@@ -242,10 +243,10 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
             final patientAc = ref.watch(
               allAcountsProvider.select((s) => s.patient),
             );
-            xlog(patientAc);
+            // xlog(patientAc);
             return TextButton(
               onPressed: () {
-                xlog(patientAc);
+                // xlog(patientAc);
                 if (patientAc != null) {
                   ref.read(accountProvider.notifier).changeAccount(patientAc);
                   context.to(patientApp.HomePage());
@@ -517,7 +518,7 @@ class _PharmacistProfilePageState extends ConsumerState<PharmacistProfilePage> {
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
-      final a = await di<AppRepositories>().updatePharmacistProfile(
+      final a = await appRepo.updatePharmacistProfile(
         PharmacistProfileRequestData.fromJson(_editedPharmacist.toJson()),
       );
 

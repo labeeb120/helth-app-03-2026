@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/services/storage.dart';
+import 'package:health_app/di.dart' show appRepo, di;
 import 'package:health_app/features/auth/data/responses/user/user_response.dart';
 import 'package:health_app/features/auth/domain/models/account.dart'
     hide Account;
@@ -257,10 +258,10 @@ class PProfile extends _$PProfile {
     try {
       // Simulate API call
       // await Future.delayed(const Duration(seconds: 2));
-      // final json = await di<AppRepositories>().initializePatientProfile(
+      // final json = await appRepo.initializePatientProfile(
       //   state.profile.toJson(),
       // );
-      final js = await di<AppRepositories>().api.initializePatientProfile(
+      final js = await appRepo.api.initializePatientProfile(
         state.profile.toJson(),
       );
       // xlog(js);
@@ -294,7 +295,7 @@ class PProfile extends _$PProfile {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final js = await di<AppRepositories>().api.editPatientProfile({
+      final js = await appRepo.api.editPatientProfile({
         'fullName': state.profile.fullName,
         'dateOfBirth': state.profile.dateOfBirth,
         'gender': state.profile.gender,

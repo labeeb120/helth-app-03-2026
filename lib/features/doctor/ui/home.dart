@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/constants/k.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor;
 import 'package:health_app/features/auth/domain/usecases/register_usecase.dart';
@@ -65,7 +66,7 @@ class _DoctorHomeState extends State<DoctorHome> {
   Future<void> _loadPatients() async {
     setState(() => _isLoading = true);
     final patients = await _patientRepository.getAllPatients();
-    final insigths = await di<AppRepositories>().doctorDashboardInsights();
+    final insigths = await appRepo.doctorDashboardInsights();
 
     // xlog(patients.t);
     setState(() {
@@ -455,13 +456,13 @@ class _DoctorHomeState extends State<DoctorHome> {
 
     if (identifier != null && identifier.isNotEmpty) {
       AppDialog().loading();
-      final res = await di<AppRepositories>().searchPatient(identifier);
+      final res = await appRepo.searchPatient(identifier);
       res.when(
         success: (json) {
           AppDialog().dismiss();
           final response = PatientResponse.fromJson(json);
           if (response.success) {
-            xlog(response);
+            // xlog(response);
           }
           // final response = PatientProfileResponse.fromJson(json);
           if (response.patient != null) {
@@ -470,7 +471,7 @@ class _DoctorHomeState extends State<DoctorHome> {
           }
         },
         error: (error) {
-          xlog(error);
+          // xlog(error);
           AppDialog().dismiss();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Patient not found: ${error.msg}')),

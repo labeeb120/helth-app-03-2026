@@ -1,4 +1,6 @@
 import 'package:health_app/auth_state.dart';
+import 'package:health_app/di.dart';
+import 'package:health_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,13 +16,18 @@ PrescriptionQueueItem toModel(dynamic a) {
 Future<List<PrescriptionQueueItem>> prescriptionQueue(Ref ref) async {
   try {
     await Future.delayed(Duration(seconds: 1));
-    final a = await di<AppRepositories>().getDio().get(
-      '/PharmacistDashboard/queue',
+    // final a = await appRepo.getDio().get('/PharmacistDashboard/queue');
+    // final listData = (a.data as Iterable).map(toModel).toList();
+    // return listData;
+    final a = await appRepo.getPharmacistDashboardQueu();
+    return a.when(
+      success: (s) => s,
+      error: (e) {
+        throw e;
+      },
     );
-    final listData = (a.data as Iterable).map(toModel).toList();
-    return listData;
   } catch (e) {
-    xlog(e);
+    // xlog(e);
     return [];
   }
 }

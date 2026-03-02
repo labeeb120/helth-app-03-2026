@@ -29,7 +29,7 @@ class AllAcounts extends _$AllAcounts {
       patient: appStorage.getPatientAccount(),
       pharmacist: appStorage.getPharmacistAccount(),
     );
-    xlog(s.toString());
+    // xlog(s.toString());
     return s;
   }
 }

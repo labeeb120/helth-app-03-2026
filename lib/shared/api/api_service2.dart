@@ -29,19 +29,20 @@ class ApiService {
   }
 
   // Helper method to handle responses
-  Map<String, dynamic> _handleResponse(Response response) {
+  dynamic _handleResponse(response) {
     try {
-      if (response.data is Map<String, dynamic>) {
-        return response.data as Map<String, dynamic>;
-      } else if (response.data is String) {
-        try {
-          final decoded = json.decode(response.data);
-          if (decoded is Map<String, dynamic>) {
-            return decoded;
-          }
-        } catch (_) {}
-      }
-      return {'success': false, 'message': 'Invalid response format'};
+      // if (response.data is Map<String, dynamic>) {
+      //   return response.data as Map<String, dynamic>;
+      // } else if (response.data is String) {
+      //   try {
+      //     final decoded = json.decode(response.data);
+      //     if (decoded is Map<String, dynamic>) {
+      return response.data;
+      // return decoded;
+      //     }
+      //   } catch (_) {}
+      // }
+      // return {'success': false, 'message': 'Invalid response format'};
     } catch (e) {
       return {'success': false, 'message': 'Error parsing response: $e'};
     }
@@ -131,8 +132,12 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> activatePharmacistAsPatientProfile() async {
-    final response = await _dio.post('/Pharmacist/activate-patient-profile');
-    return _handleResponse(response);
+    try {
+      final response = await _dio.post('/Pharmacist/activate-patient-profile');
+      return _handleResponse(response);
+    } catch (e) {
+      return {};
+    }
   }
 
   Future<Map<String, dynamic>> doctorStatistics() async {
@@ -230,6 +235,8 @@ class ApiService {
 
   Future<Map<String, dynamic>> getPharmacistProfile() async {
     final response = await _dio.get('/Pharmacist/profile');
+
+    // xlog(response.runtimeType);
     return _handleResponse(response);
   }
 
@@ -241,11 +248,12 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> searchPrescription(String identifier) async {
-    xlog('ssssssssssssssss$identifier');
+    // xlog('ssssssssssssssss$identifier');
     final response = await _dio.get(
       '/Pharmacist/search-prescription?identifier=$identifier',
     );
-    return _handleResponse(response);
+    return response.data;
+    // return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> checkDrugInteractions(int id) async {

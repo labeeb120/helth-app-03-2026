@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/constants/_all.dart';
 import 'package:health_app/core/constants/app_strings.dart';
+import 'package:health_app/di.dart';
 // import 'package:health_app/features/auth/data/responses/user/user_response.dart';
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/features/pharmacist/data/providers/prescriptions.dart';
@@ -41,7 +42,7 @@ class _PrescriptionsPageState extends ConsumerState<PrescriptionsPage> {
 
     if (id != null) {
       AppDialog().loading(message: AppStrings.loadingMsg);
-      final res = await di<AppRepositories>().searchPrescription(id);
+      final res = await appRepo.searchPrescription(id);
       AppDialog().dismiss();
 
       res.when(
@@ -336,11 +337,11 @@ class PrescriptionCard extends StatelessWidget {
 
       try {
         // Send the PUT request with the selected integer status ID
-        final res = await di<AppRepositories>().getDio().put(
+        final res = await appRepo.getDio().put(
           '/Pharmacist/prescription-status',
           data: {"prescriptionId": prescription.id, "status": selectedStatusId},
         );
-        xlog(res.data);
+        // xlog(res.data);
         final a = PrescriptionsResponse.fromJson(res.data);
 
         if (a.success ?? false) {
@@ -373,9 +374,7 @@ class PrescriptionCard extends StatelessWidget {
 
   void _handleInteractionCheck(BuildContext context) async {
     AppDialog().loading();
-    final res = await di<AppRepositories>().checkDrugInteractions(
-      prescription.id,
-    );
+    final res = await appRepo.checkDrugInteractions(prescription.id);
     AppDialog().dismiss();
     showMessage() {
       AppDialog().show(

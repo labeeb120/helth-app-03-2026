@@ -160,7 +160,7 @@ class PharmacistHomePage extends StatelessWidget {
                 final data = ref.watch(prescriptionQueueProvider);
                 return data.when(
                   data: (d) {
-                    xlog(d.toString());
+                    // xlog(d.toString());
                     return Column(
                       children: List.generate(d.length, (index) {
                         return ListTile(

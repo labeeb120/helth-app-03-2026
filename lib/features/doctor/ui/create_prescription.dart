@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/error/app_error.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/doctor/data/providers/prescriptions.dart';
 import 'package:health_app/features/doctor/data/providers/search_patient.dart';
 // import 'package:health_app/features/doctor/data/models/prescription.dart';
@@ -139,15 +140,15 @@ class _CreatePrescriptionDialogState
                         ElevatedButton(
                           onPressed: () async {
                             if (_k.currentState!.validate()) {
-                              xlog('ssssssssssssssssssssssssssss');
+                              // xlog('ssssssssssssssssssssssssssss');
                               // ref.invalidate(searchMedicationProvider(identifier: ''));
-                              final dio = di<AppRepositories>().getDio();
+                              final dio = appRepo.getDio();
                               final res = await dio.get(
                                 '/Doctor/search-drugs?query=${_controller.text}',
                               );
                               final data = res.data;
                               // xlog(data.toString());
-                              xlog(data.runtimeType);
+                              // xlog(data.runtimeType);
                               if (data.runtimeType == List) {
                                 final d = (data as List<dynamic>)
                                     .map(
@@ -359,7 +360,7 @@ class _CreatePrescriptionDialogState
     AppDialog().loading();
     bool isOk = false;
     try {
-      final res = await di<AppRepositories>().addPrescription(req.toJson());
+      final res = await appRepo.addPrescription(req.toJson());
       res.when(
         success: (s) {
           // context.pop();

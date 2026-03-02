@@ -5,9 +5,10 @@ import 'package:health_app/features/auth/data/usecases/login_usecase.dart'
     show LoginUsecaseImpl;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/shared/api/api_repositories2.dart';
-import 'package:health_app/shared/api/api_service copy.dart';
+import 'package:health_app/shared/api/api_service2.dart';
 import 'package:health_app/shared/api/dio_factory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+export './shared/api/api_repositories2.dart' show AppRepositories;
 
 // import 'features/home/presentation/pages/p.dart';
 final di = GetIt.instance;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart'
     show Doctor;
@@ -554,9 +555,7 @@ class _DoctorProfilePageState extends ConsumerState<DoctorProfilePage> {
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
-      final a = await di<AppRepositories>().updateDoctorProfile(
-        _editedDoctor.toJson(),
-      );
+      final a = await appRepo.updateDoctorProfile(_editedDoctor.toJson());
 
       AppDialog().dismiss();
       // log(a.data)

@@ -10,6 +10,7 @@ import 'package:health_app/features/auth/data/responses/user/user_response.dart'
         GeneralResponse,
         LoginResponse,
         PatientProfileResponse,
+        PharmacistAsPatientResponse,
         PharmacistProfileResponse;
 import 'package:health_app/features/auth/domain/models/account.dart'
     show PatientAccount, DoctorAccount, PharmacistAccount;
@@ -24,7 +25,9 @@ import 'package:health_app/features/doctor/data/responses/insights.dart';
 import 'package:health_app/features/pharmacist/data/requests/profile.dart';
 import 'package:health_app/features/pharmacist/data/responses/drugs_interaction.dart';
 import 'package:health_app/features/pharmacist/data/responses/prescription.dart';
-import 'package:health_app/shared/api/api_service copy.dart' show ApiService;
+import 'package:health_app/features/pharmacist/data/responses/queue_item.dart'
+    show PrescriptionQueueItem;
+import 'package:health_app/shared/api/api_service2.dart' show ApiService;
 import 'package:health_app/shared/ex.dart';
 
 class AppRepositories {
@@ -46,6 +49,19 @@ class AppRepositories {
   }) async {
     try {
       final response = await request();
+
+      // xlog('response $response');
+      final res = response;
+      if (res.runtimeType == Response) {
+        if (response.statusCode == 401) {
+          throw DioException(
+            requestOptions: response.requestOptions,
+            response: (res as Response),
+          );
+        }
+
+        // throw DioException(requestOptions: )
+      }
       return ErrorOr.success(data: fromJson(response));
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -72,7 +88,7 @@ class AppRepositories {
               }
             } else {
               xlog('Token refresh failed');
-              await clearLocalData();
+              // await clearLocalData();
               return ErrorOr.error(
                 error: ServerError(msg: 'Session expired. Please login again.'),
               );
@@ -80,7 +96,7 @@ class AppRepositories {
           },
           error: (error) {
             xlog('Token refresh error: $error');
-            clearLocalData();
+            // clearLocalData();
             return ErrorOr.error(
               error: ServerError(msg: 'Session expired. Please login again.'),
             );
@@ -93,11 +109,18 @@ class AppRepositories {
         error: ServerError(msg: e.message ?? 'Network error occurred'),
       );
     } catch (e) {
-      xlog('Unexpected error: $e');
+      xlog('Unexpected error: salah $e');
       return ErrorOr.error(
-        error: ServerError(msg: 'An unexpected error occurred: $e'),
+        error: ServerError(msg: 'An unexpected error occurred:salah $e'),
       );
     }
+  }
+
+  Future<ErrorOr<bool>> addPrescription(Map<String, dynamic> data) async {
+    return handleDioRequest(
+      request: () => api.addPrescription(data),
+      fromJson: (data) => data['success'] ?? false,
+    );
   }
 
   Future<ErrorOr<bool>> refreshToken() async {
@@ -145,7 +168,7 @@ class AppRepositories {
     } on DioException catch (e) {
       xlog('DioException during token refresh: ${e.message}');
       if (e.response?.statusCode == 401) {
-        await clearLocalData();
+        // await clearLocalData();
       }
       return ErrorOr.error(
         error: ServerError(msg: e.message ?? 'Token refresh failed'),
@@ -175,10 +198,9 @@ class AppRepositories {
           role == 'pharmacist' ||
           role == 'admin';
 
-      if (response.success.isN() && isValid) {
+      if (response.wasSuccesfull && isValid) {
         await storage.setUserToken(response.accessToken ?? '');
         await storage.setUserRefreshToken(response.refreshToken ?? '');
-        await _getProfile(role);
 
         final auth = AuthRecord(
           accessToken: response.accessToken ?? '',
@@ -188,6 +210,7 @@ class AppRepositories {
         );
         storage.setAuthRecord(auth);
 
+        await _getProfile(role);
         return ErrorOr.success(data: auth);
       } else {
         return ErrorOr.error(
@@ -249,6 +272,26 @@ class AppRepositories {
       debugPrint('Pharmacist registration error: $e');
       return ErrorOr.error(error: ServerError(msg: 'Registration failed: $e'));
     }
+  }
+
+  PrescriptionQueueItem toModel(dynamic a) {
+    return PrescriptionQueueItem.fromJson(a);
+  }
+
+  Future<ErrorOr<List<PrescriptionQueueItem>>>
+  getPharmacistDashboardQueu() async {
+    return handleDioRequest(
+      request: () =>
+          // await Future.delayed(Duration(seconds: 1));
+          // final a = await
+          getDio().get('/PharmacistDashboard/queue'),
+      // return a;
+      fromJson: (a) {
+        final listData = (a.data as Iterable).map(toModel).toList();
+        return listData;
+      },
+    );
+    // return ErrorOr.success(data: listData);
   }
 
   Future<ErrorOr<bool>> logout() async {
@@ -409,12 +452,12 @@ class AppRepositories {
     try {
       final activateResult = await handleDioRequest(
         request: () => api.activatePharmacistAsPatientProfile(),
-        fromJson: (data) => DoctorAsPatientResponse.fromJson(data),
+        fromJson: (data) => PharmacistAsPatientResponse.fromJson(data),
       );
 
       activateResult.when(
         success: (res3) {
-          if (res3.success.isN()) {
+          if (res3.wasSuccesfull) {
             final token = res3.token;
             if (token != null) {
               storage.setUserToken(token);
@@ -435,7 +478,7 @@ class AppRepositories {
 
       result.when(
         success: (res) {
-          if (res.success.isN() && res.pharmacist != null) {
+          if (res.wasSuccesfull && res.pharmacist != null) {
             final pharmacist = res.pharmacist!;
             final pharmacistAccount = PharmacistAccount(
               pharmacist: Pharmacist.fromJson(pharmacist.toJson()),

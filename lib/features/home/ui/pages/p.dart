@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/error/app_error.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/home/ui/pages/initialize_profile/p.dart';
 import 'package:health_app/features/home/ui/pages/initialize_profile/page.dart';
@@ -119,11 +120,11 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           AppDialog().loading();
           xlog('start qr ');
-          final dio = di<AppRepositories>().getDio();
+          final dio = appRepo.getDio();
           final res0 = await dio.get('/Patient/emergency-screen');
           xlog(res0);
 
-          final res = await di<AppRepositories>().generateQr();
+          final res = await appRepo.generateQr();
           AppDialog().dismiss();
 
           showDialog(

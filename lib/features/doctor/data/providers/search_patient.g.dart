@@ -88,7 +88,7 @@ final class SearchPatientProvider
   }
 }
 
-String _$searchPatientHash() => r'5cada3a9aece75c4b84b970ae06c1871aed356a6';
+String _$searchPatientHash() => r'930caa299f06fca577a93ad853c38af66fa0886f';
 
 final class SearchPatientFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ErrorOr<Patient?>>, String> {
@@ -165,7 +165,7 @@ final class SearchMedicationProvider
   }
 }
 
-String _$searchMedicationHash() => r'31264f3b2d95011540ba47a4919e694c68534d97';
+String _$searchMedicationHash() => r'08f51e72ec1a377895c44666b53d4b6d8db0d2da';
 
 final class SearchMedicationFamily extends $Family
     with

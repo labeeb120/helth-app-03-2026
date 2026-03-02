@@ -5,6 +5,7 @@ import 'package:health_app/core/constants/k.dart';
 import 'package:health_app/core/constants/app_colors.dart' show AppColors;
 import 'package:health_app/core/constants/app_layout.dart';
 import 'package:health_app/core/router/app_routes.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/auth_state.dart';
 // import 'package:health_app/core/user/user.dart' hide UserType;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
@@ -67,7 +68,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       AppDialog().loading(message: "login, please wait ...");
       await Future.delayed(Duration(seconds: 2));
 
-      final auth = await di<AppRepositories>().login(
+      final auth = await appRepo.login(
         identifier: _idCardNumberController.text,
         password: _passwordController.text,
       );
@@ -78,7 +79,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       auth.when(
         success: (succes) {
           // xlog(succes.toString());
-          // goHome(succes);
+          goHome(succes);
         },
         error: (e) {
           // AppDialog().info(title: 'Error', message: 'dsadsdsadsadsadsa');

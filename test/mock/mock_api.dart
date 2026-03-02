@@ -6,7 +6,8 @@ import 'dart:ui';
 import 'package:health_app/core/user/user.dart';
 import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/auth/domain/models/auth_state.dart';
-import 'package:health_app/shared/api/api_service.dart';
+import 'package:health_app/shared/api/api_service2.dart';
+// import 'package:health_app/shared/api/api_service.dart';
 import 'package:health_app/core/services/storage.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -17,39 +18,25 @@ class MockAppStorage extends Mock implements AppStorage {
   String getappLoale() => 'ar';
 
   @override
-  Future<void> clearAllAccounts()async {
-    
-  }
+  Future<void> clearAllAccounts() async {}
 
   @override
-  Future<void> clearAuthRecord()async {
-    
-  }
+  Future<void> clearAuthRecord() async {}
 
   @override
-  Future<void> clearAuthToken()async {
-    
-  }
+  Future<void> clearAuthToken() async {}
 
   @override
-  AdminAccount? getAdminAccount() {
-    
-  }
+  AdminAccount? getAdminAccount() {}
 
   @override
-  AuthRecord? getAuthRecord() {
-    
-  }
+  AuthRecord? getAuthRecord() {}
 
   @override
-  DoctorAccount? getDoctorAccount() {
-    
-  }
+  DoctorAccount? getDoctorAccount() {}
 
   @override
-  Map<String, dynamic>? getJson(String k) {
-    
-  }
+  Map<String, dynamic>? getJson(String k) {}
 
   @override
   Locale getLocale() {
@@ -57,57 +44,37 @@ class MockAppStorage extends Mock implements AppStorage {
   }
 
   @override
-  PatientAccount? getPatientAccount() {
-    
-  }
+  PatientAccount? getPatientAccount() {}
 
   @override
-  PharmacistAccount? getPharmacistAccount() {
-    
-  }
+  PharmacistAccount? getPharmacistAccount() {}
 
   @override
-  String? getString(String k) {
-    
-  }
+  String? getString(String k) {}
 
   @override
-  String? getUserToken() {
-    
-  }
+  String? getUserToken() {}
 
   @override
-  Future<void> setAdminAccount(AdminAccount account)async {
-    
-  }
+  Future<void> setAdminAccount(AdminAccount account) async {}
 
   @override
-  Future<void> setAppAuthState(AppAuthState auth)async {
-    
-  }
+  Future<void> setAppAuthState(AppAuthState auth) async {}
 
   @override
-  Future<void> setAuthRecord(AuthRecord auth)async {
-    
-  }
+  Future<void> setAuthRecord(AuthRecord auth) async {}
 
   @override
-  Future<void> setDoctorAccount(DoctorAccount account)async {
-    
-  }
+  Future<void> setDoctorAccount(DoctorAccount account) async {}
 
   @override
-  Future<void> setPatientAccount(PatientAccount account)async {
-    
-  }
+  Future<void> setPatientAccount(PatientAccount account) async {}
 
   @override
-  Future<void> setPharmacistAccount(PharmacistAccount account)async {
-    
-  }
+  Future<void> setPharmacistAccount(PharmacistAccount account) async {}
 
   // @override
   // SharedPreferences get sharedPreferences {
-    // return SharedPreferences()
-  // } 
+  // return SharedPreferences()
+  // }
 }

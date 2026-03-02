@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/error/app_error.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/data/responses/user/user_response.dart';
 import 'package:health_app/features/doctor/data/providers/medical_records.dart';
 import 'package:health_app/features/doctor/data/requests/medical_record.dart';
@@ -41,7 +42,7 @@ class _DoctorMedicalRecordState extends ConsumerState<DoctorMedicalRecord> {
     );
 
     if (id != null && id.isNotEmpty) {
-      final res = await di<AppRepositories>().searchPatient(id);
+      final res = await appRepo.searchPatient(id);
       res.when(
         success: (json) {
           final p = PatientProfileResponse.fromJson(json);

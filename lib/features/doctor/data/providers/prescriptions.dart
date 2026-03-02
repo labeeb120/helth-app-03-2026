@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/services/storage.dart';
+import 'package:health_app/di.dart';
 // import 'package:health_app/features/doctor/data/requests/medical_record.dart';
 import 'package:health_app/features/doctor/data/requests/prescription.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,7 +12,7 @@ part 'prescriptions.g.dart';
 class PrescriptionsStore extends _$PrescriptionsStore {
   @override
   PrescriptionsList build() {
-    final s = di<AppStorage>().getString(PrescriptionsList_KEY);
+    final s = appStorage.getString(PrescriptionsList_KEY);
     if (s != null) {
       try {
         final json = jsonDecode(s);

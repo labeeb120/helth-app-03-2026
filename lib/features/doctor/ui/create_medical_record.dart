@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/error/app_error.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/doctor/data/providers/medical_records.dart';
 import 'package:health_app/features/doctor/data/requests/medical_record.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
@@ -266,34 +267,35 @@ class _CreateMedicalRecordDialogState
       );
 
       AppDialog().loading(message: 'please wait, processing,,,');
+      // TODO
 
-      final res = await di<AppRepositories>().addMedicalRecord(record.toJson());
-      AppDialog().dismiss();
-      await ref
-          .read(medicalRecordsStoreProvider.notifier)
-          .addMedicalRecord(record);
+      // final res = await appRepo.m(record.toJson());
+      // AppDialog().dismiss();
+      // await ref
+      //     .read(medicalRecordsStoreProvider.notifier)
+      //     .addMedicalRecord(record);
 
-      res.when(
-        success: (s) {
-          xlog(s);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Medical record created successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pop(context, true); // Return success
-        },
-        error: (er) {
-          xlog(er);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: ${er.msg}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        },
-      );
+      // res.when(
+      //   success: (s) {
+      //     xlog(s);
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       const SnackBar(
+      //         content: Text('Medical record created successfully'),
+      //         backgroundColor: Colors.green,
+      //       ),
+      //     );
+      //     Navigator.pop(context, true); // Return success
+      //   },
+      //   error: (er) {
+      //     xlog(er);
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(
+      //         content: Text('Error: ${er.msg}'),
+      //         backgroundColor: Colors.red,
+      //       ),
+      //     );
+      //   },
+      // );
     }
   }
 }

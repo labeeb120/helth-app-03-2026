@@ -48,4 +48,4 @@ final class PatientAccountProvider
   }
 }
 
-String _$patientAccountHash() => r'b2ba6c72f0e78df670aacb557f3fe6ccaa92082c';
+String _$patientAccountHash() => r'3907308a3fe0693349fd5f27e048fa6e204865ac';

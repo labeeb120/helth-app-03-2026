@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_app/core/error/app_error.dart';
-import 'package:health_app/features/auth/data/responses/user/user_response.dart';
+import 'package:health_app/di.dart';
 import 'package:health_app/features/doctor/data/providers/prescriptions.dart';
 // import 'package:health_app/features/doctor/data/models/prescription.dart';
 import 'package:health_app/features/doctor/data/requests/prescription.dart';
@@ -10,9 +10,6 @@ import 'package:health_app/features/doctor/data/responses/patient_response.dart'
 import 'package:health_app/features/doctor/ui/create_prescription.dart';
 import 'package:health_app/features/doctor/ui/medical_record.dart';
 import 'package:health_app/features/doctor/ui/widgets/prescreption_card.dart';
-import 'package:health_app/shared/api/api_repositories.dart';
-import 'package:health_app/shared/ex.dart';
-import 'package:health_app/auth_state.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 
 class PrescreptionsPage extends ConsumerStatefulWidget {
@@ -45,26 +42,21 @@ class _PrescreptionsPageState extends ConsumerState<PrescreptionsPage> {
     );
     AppDialog().loading();
 
-    xlog('oooooooooooooooooooooo');
-
     if (identifier != null && identifier.isNotEmpty) {
-      final res = await di<AppRepositories>().searchPatient(identifier);
+      final res = await appRepo.searchPatient(identifier);
 
       res.when(
         success: (json) {
           AppDialog().dismiss();
-          xlog(json);
           final response = PatientResponse.fromJson(json);
           if (response.success) {
             _handleOnCreate(response.patient?.id ?? 1);
-            xlog(response);
           }
           // final response = PatientProfileResponse.fromJson(json);
           // if (response.patient != null) {
           // }
         },
         error: (error) {
-          xlog(error);
           AppDialog().dismiss();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Patient not found: ${error.msg}')),
