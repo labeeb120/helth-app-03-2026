@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_app/auth_state.dart' show accountProvider, di;
+import 'package:health_app/auth_state.dart' show accountProvider;
 import 'package:health_app/core/router/app_routes.dart';
-import 'package:health_app/core/services/storage.dart';
-import 'package:health_app/features/auth/data/usecases/login_usecase.dart'
-    show LoginUsecaseImpl;
+import 'package:health_app/di.dart' show initDi;
 import 'package:health_app/features/auth/domain/models/account.dart';
-import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/features/auth/ui/pages/register_page.dart';
 import 'package:health_app/features/doctor/ui/home.dart' as doctor_app;
 import 'package:health_app/features/home/ui/pages/p.dart' as patient_app;
@@ -15,13 +12,9 @@ import 'package:health_app/features/patients/ui/home.dart'
 import 'package:health_app/features/pharmacist/ui/home/page.dart'
     as pharmacist_page;
 import 'package:health_app/l10n/app_localizations.dart';
-import 'package:health_app/shared/api/api_repositories.dart';
-import 'package:health_app/shared/api/api_service.dart';
-import 'package:health_app/shared/api/dio_factory.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:health_app/shared/providers/local/local_provider.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/theme/app_theme.dart';
 import 'features/auth/ui/pages/login_page.dart';
@@ -29,7 +22,7 @@ import 'features/auth/ui/pages/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await init();
+  await initDi();
 
   runApp(ProviderScope(child: const HealthCareApp()));
 }
@@ -86,7 +79,7 @@ class SplashPage extends ConsumerWidget {
     return auth.when(
       initial: () => LoginPage(),
       acount: (a) => a.when(
-        patient: (p) => patient_app.HomePage(),
+        patient: (p) => patient_app.MainPatientPage(),
         doctor: (p) => const doctor_app.HomePage(),
         pharmacist: (p) => const pharmacist_page.HomePage(),
         admin: (p) => patient_app.HomePage(),
@@ -123,24 +116,3 @@ class DoctorHomePage extends StatelessWidget {
 }
 
 // final GetIt di = GetIt.instance;
-Future<void> init() async {
-  final SharedPreferences sharedPreferences =
-      await SharedPreferences.getInstance();
-  di.registerLazySingleton<AppStorage>(() => AppStorage(sharedPreferences));
-
-  di.registerSingletonAsync<SharedPreferences>(() async {
-    return await SharedPreferences.getInstance();
-  });
-
-  di.registerFactory<DioFactory>(() => DioFactory(di()));
-
-  di.registerFactory<ApiService>(() => ApiService(di()));
-  di.registerFactory<AppRepositories>(
-    () => AppRepositories(api: di(), storage: di()),
-  );
-
-  di.registerFactory<LoginUsecase>(() => LoginUsecaseImpl(di()));
-  // di.registerFactory<RegisterUsecase>(
-  //   () => RegisterUsecaseImpl(dio: di(), storage: di()),
-  // );
-}

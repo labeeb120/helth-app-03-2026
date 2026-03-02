@@ -11,7 +11,7 @@ import 'package:health_app/features/auth/domain/models/patient.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const int version = 26;
+const int version = 290;
 const String appLocalKey = 'appLocalKey$version';
 const String userTokenKey = 'userTokenKey$version';
 const String userRefreshTokenKey = 'userRefreshTokenKey$version';
@@ -19,6 +19,8 @@ const String userRefreshTokenKey = 'userRefreshTokenKey$version';
 const String PATIENT_ACCOUNT_KEY = 'patient-account$version';
 const String PATIENT_ACCOUNT_IS_INITIALIZED_KEY =
     'patient-is-initialized-account$version';
+String isInitializedKey(int id) =>
+    '${PATIENT_ACCOUNT_IS_INITIALIZED_KEY}_userId_$id';
 const String DOCTOR_ACCOUNT_KEY = 'doctor-account$version';
 const String PHARMACIST_ACCOUNT_KEY = 'pharmacist-account$version';
 const String ADMIN_ACCOUNT_KEY = 'admin-account$version';
@@ -85,6 +87,8 @@ class AppStorage {
       await sharedPreferences.setString(userTokenKey, val);
   Future<bool?> setUserRefreshToken(String val) async =>
       await sharedPreferences.setString(userRefreshTokenKey, val);
+  String? getUserRefreshToken() =>
+      sharedPreferences.getString(userRefreshTokenKey);
 
   // Future<void> setAppAuthState(AppAuthState auth) async {
   //   await sharedPreferences.setString(

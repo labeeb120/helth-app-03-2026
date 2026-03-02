@@ -13,6 +13,10 @@ import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 import './profile.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+// medicalrec
+// emergency
+// prescriptions
+
 class MainPatientPage extends ConsumerWidget {
   const MainPatientPage({super.key});
 
@@ -98,7 +102,11 @@ class _HomePageState extends State<HomePage> {
         children: [
           MyHomePage(),
           InitializedProfilePage2(),
-          MyHomePage(),
+          Consumer(
+            builder: (context, ref, child) {
+              return Scaffold(appBar: AppBar(title: Text('Prescriptions')));
+            },
+          ),
           ProfilePage(),
         ],
       ),

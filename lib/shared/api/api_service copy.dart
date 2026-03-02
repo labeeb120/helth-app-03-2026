@@ -1,13 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:dio/dio.dart';
-import 'package:health_app/core/constants/_all.dart';
-import 'package:health_app/features/auth/domain/usecases/register_usecase.dart';
-import 'package:health_app/shared/api/dio_factory.dart';
-// import 'package:dio/io.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:path/path.dart' as path;
+// Updated ApiService with proper type handling for methods that return lists
+import 'dart:convert' show json;
+import 'dart:io' show Platform;
+
+import 'package:dio/dio.dart' show FormData, Options, Dio, Response;
+import 'package:health_app/core/constants/k.dart' show K;
+import 'package:health_app/di.dart';
+import 'package:health_app/shared/api/dio_factory.dart' show DioFactory;
+
+import '../ex.dart' show xlog;
 
 class ApiService {
   Dio get _dio => factory.getDio();
@@ -15,14 +15,14 @@ class ApiService {
   final DioFactory factory;
 
   ApiService(this.factory);
-  // In your ApiService class, add:
+
   Future<Map<String, dynamic>> refreshToken(String refreshToken) async {
     try {
-      final response = await _dio.post(
+      final response = await _gDio.post(
         '/Auth/refresh',
         data: {'refreshToken': refreshToken},
       );
-      return response.data;
+      return _handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -30,30 +30,35 @@ class ApiService {
 
   // Helper method to handle responses
   Map<String, dynamic> _handleResponse(Response response) {
-    // if (response.statusCode! >= 200 && response.statusCode! < 300) {
-    final data = response.data;
-    // xlog('_handleResponse' + data);
-    // xlog('_handleResponse' + response.toString());
-    // if (data.runtimeType == String&&data.isEmpty) {
-    // }
-
-    // if (data.runtimeType is Map<String, dynamic>) {
-    //   return data as Map<String, dynamic>; // This returns the JSON Map
-    // }
     try {
-      final d = data as Map<String, dynamic>; // This returns the JSON Map
-      return d;
-    } catch (e) {}
-    return {'success': false, 'message': 'ssssss ' + data.toString()};
-    // throw data.toString();
-    // } else {
-    // return response.data; // This returns the JSON Map
-    // if () {
+      if (response.data is Map<String, dynamic>) {
+        return response.data as Map<String, dynamic>;
+      } else if (response.data is String) {
+        try {
+          final decoded = json.decode(response.data);
+          if (decoded is Map<String, dynamic>) {
+            return decoded;
+          }
+        } catch (_) {}
+      }
+      return {'success': false, 'message': 'Invalid response format'};
+    } catch (e) {
+      return {'success': false, 'message': 'Error parsing response: $e'};
+    }
+  }
 
-    // }
-    // xlog(response.data['']);
-    // throw Exception('Server Error: ${response.statusCode}');
-    // }
+  // Helper for list responses
+  List<dynamic> _handleListResponse(Response response) {
+    if (response.data is List) {
+      return response.data as List<dynamic>;
+    } else if (response.data is Map &&
+        (response.data as Map).containsKey('data')) {
+      final data = (response.data as Map)['data'];
+      if (data is List) {
+        return data;
+      }
+    }
+    return [];
   }
 
   // ===============================================================
@@ -70,28 +75,15 @@ class ApiService {
   Future<Map<String, dynamic>> registerDoctor(FormData data) async {
     xlog(data.toString());
     final response = await _gDio.post('/Auth/register/doctor', data: data);
-
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> registerPharmacist(FormData data) async {
-    // FormData formData = FormData.fromMap({
-    //   "licenseDocument": await MultipartFile.fromFile(file.path, filename: fileName),
-    //   "user_id": "123", // Additional fields
-    // });
-
-    final response = await _dio.post(
+    final response = await _gDio.post(
       '/Auth/register/pharmacist',
       data: data,
-
-      options: Options(
-        headers: {'Content-Type': 'multipart/form-data'},
-        // Add auth token if needed
-        // 'Authorization': 'Bearer $token',
-      ),
+      options: Options(headers: {'Content-Type': 'multipart/form-data'}),
     );
-    // xlog('sssssssss' + response.data);
-    // return ErrorOr.error(error: error);
     return _handleResponse(response);
   }
 
@@ -101,34 +93,18 @@ class ApiService {
       data: {
         "identifier": identifier,
         "password": password,
-        "deviceToken": "dummy_token_or_fcm", // Update as needed
+        "deviceToken": "dummy_token_or_fcm",
         "devicePlatform": Platform.operatingSystem,
       },
     );
-    // final res = LoginResponse.fromJson(response.data);
-
-    // if (res.success) {
-    //   // Save Token automatically
-    //   final prefs = await SharedPreferences.getInstance();
-    //   await prefs.setString('accessToken', response.data['accessToken']);
-    //   await prefs.setInt('userId', response.data['userId']);
-    //   await prefs.setString('role', response.data['role']);
-    // }
-
-    // xlog('sssssssss ${response.data}');
-    final a = _handleResponse(response);
-    return a;
-    // xlog('sssssssss ${a}');
-
-    // return {};
+    return _handleResponse(response);
   }
 
   Future<bool> logout() async {
     try {
-      // final response =
-      await _dio.post('/Auth/logout'); // No body
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear(); // Clear local data
+      await _dio.post('/Auth/logout');
+      final prefs = appStorage.sharedPreferences;
+      await prefs.clear();
       return true;
     } catch (e) {
       return false;
@@ -193,6 +169,11 @@ class ApiService {
     return _handleResponse(response);
   }
 
+  Future<List<dynamic>> doctorGetRecent() async {
+    final response = await _dio.get(K.doctorHomeUrl);
+    return _handleListResponse(response);
+  }
+
   // ===============================================================
   // PATIENT
   // ===============================================================
@@ -208,15 +189,11 @@ class ApiService {
     Map<String, dynamic> data,
   ) async {
     final response = await _dio.put('/Patient/profile', data: data);
-
-    // response.log('response sssssssssss');
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> getPatientProfile() async {
     final response = await _dio.get('/Patient/profile');
-
-    // response.log('response sssssssssss');
     return _handleResponse(response);
   }
 
@@ -228,7 +205,6 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> generateQr() async {
-    // Assuming POST since it generates data, empty body if required
     final response = await _dio.post('/Patient/generate-qr', data: {});
     return _handleResponse(response);
   }
@@ -239,17 +215,13 @@ class ApiService {
   }
 
   Future<List<dynamic>> getPatientMedicalRecords() async {
-    final response = await _dio.get(
-      '/Patient/medical-records',
-    ); // Note: Returns List
-    return response.data;
+    final response = await _dio.get('/Patient/medical-records');
+    return _handleListResponse(response);
   }
 
   Future<List<dynamic>> getPatientPrescriptions() async {
-    final response = await _dio.get(
-      '/Patient/prescriptions',
-    ); // Note: Returns List
-    return response.data;
+    final response = await _dio.get('/Patient/prescriptions');
+    return _handleListResponse(response);
   }
 
   // ===============================================================
@@ -272,16 +244,12 @@ class ApiService {
     xlog('ssssssssssssssss$identifier');
     final response = await _dio.get(
       '/Pharmacist/search-prescription?identifier=$identifier',
-      // data: FormData.fromMap({"identifier": identifier}),
     );
     return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> checkDrugInteractions(int id) async {
-    final response = await _dio.post(
-      '/Pharmacist/check-interactions/$id',
-      // data: data,
-    );
+    final response = await _dio.post('/Pharmacist/check-interactions/$id');
     return _handleResponse(response);
   }
 
@@ -320,17 +288,17 @@ class ApiService {
 
   Future<List<dynamic>> getPendingRegistrations() async {
     final response = await _dio.get('/Admin/pending-registrations');
-    return response.data;
+    return _handleListResponse(response);
   }
 
-  Future<String> approveUser(int userId) async {
+  Future<Map<String, dynamic>> approveUser(int userId) async {
     final response = await _dio.post('/Admin/approve/$userId');
-    return response.data.toString();
+    return _handleResponse(response);
   }
 
-  Future<String> rejectUser(int userId) async {
+  Future<Map<String, dynamic>> rejectUser(int userId) async {
     final response = await _dio.post('/Admin/reject/$userId');
-    return response.data.toString();
+    return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> getUsers(Map<String, dynamic> filterData) async {

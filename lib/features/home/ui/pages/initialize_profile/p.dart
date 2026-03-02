@@ -6,6 +6,7 @@ import 'package:health_app/core/services/storage.dart';
 import 'package:health_app/features/auth/data/responses/user/user_response.dart';
 import 'package:health_app/features/auth/domain/models/account.dart'
     hide Account;
+import 'package:health_app/features/auth/domain/models/auth_state.dart';
 import 'package:health_app/features/auth/domain/models/patient.dart';
 import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
@@ -262,16 +263,21 @@ class PProfile extends _$PProfile {
       final js = await di<AppRepositories>().api.initializePatientProfile(
         state.profile.toJson(),
       );
-      xlog(js);
+      // xlog(js);
       // ║    {
       // ║         "success": true,
       // ║         "message": "تم تهيئة الملف الطبي بنجاح",
       // ║         "patientId": 3131
       // ║    }
       // ║
-
-      await di<AppStorage>().setBool(PATIENT_ACCOUNT_IS_INITIALIZED_KEY, true);
-      ref.invalidate(isInitializedProvider);
+      final id = ref
+          .read(authRecordStateProvider)
+          .whenOrNull(auth: (r) => r)
+          ?.userId;
+      if (id != null) {
+        await di<AppStorage>().setBool(isInitializedKey(id), true);
+        ref.invalidate(isInitializedProvider);
+      }
 
       // Here you would make the actual API call
       // final response = await ApiService().initializePatientProfile(state.profile);
@@ -359,7 +365,17 @@ PatientProfile profile(Ref ref) {
 // isInitialized(Ref ref, {required int id}) {
 //   return di<AppStorage>().getBool(PATIENT_ACCOUNT_IS_INITIALIZED_KEY);
 // }
+@riverpod
+bool isInitialized(Ref ref) {
+  final a = ref
+      .watch(authRecordStateProvider)
+      .whenOrNull(auth: (record) => record);
+  if (a == null) {
+    return false;
+  }
+  // a.userId
+  return di<AppStorage>().getBool(isInitializedKey(a.userId));
+}
 
-final isInitializedProvider = Provider<bool>((ref) {
-  return di<AppStorage>().getBool(PATIENT_ACCOUNT_IS_INITIALIZED_KEY);
-});
+// final isInitializedProvider = Provider<bool>((ref) {
+// });

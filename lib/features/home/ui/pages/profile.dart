@@ -1,6 +1,9 @@
 // profile_page.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_app/auth_state.dart';
 import 'package:health_app/features/home/ui/pages/edit_profile.dart';
+import 'package:health_app/shared/ex.dart';
 import 'package:health_app/shared/widgets/patient/app_bar/return_button.dart';
 import 'package:iconsax/iconsax.dart';
 // import 'package:iconsax/iconsax.dart';
@@ -474,12 +477,27 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // Implement logout logic
+            Consumer(
+              builder: (context, ref, _) {
+                out() {
+                  context.pop();
+                }
+
+                return TextButton(
+                  onPressed: () {
+                    ref
+                        .read(authRecordStateProvider.notifier)
+                        .logOut()
+                        .whenComplete(out);
+
+                    // Implement logout logic
+                  },
+                  child: const Text(
+                    'Log Out',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                );
               },
-              child: const Text('Log Out', style: TextStyle(color: Colors.red)),
             ),
           ],
         );

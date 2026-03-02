@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'emergeny.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class EmergencyResponse extends BaseResponse {
+class EmergencyResponse {
   // final List<MedicalRecord>? medicalRecords;
   // final List<Prescription>? prescriptions;
   final String fullName;
@@ -29,4 +29,20 @@ class EmergencyResponse extends BaseResponse {
   factory EmergencyResponse.fromJson(Map<String, dynamic> json) =>
       _$EmergencyResponseFromJson(json);
   Map<String, dynamic> toJson() => _$EmergencyResponseToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class EmergencyPageResponse extends BaseResponse {
+  final EmergencyResponse emergencyInfo;
+
+  EmergencyPageResponse({
+    super.success,
+    super.message,
+    required this.emergencyInfo,
+  });
+
+  factory EmergencyPageResponse.fromJson(Map<String, dynamic> json) =>
+      _$EmergencyPageResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EmergencyPageResponseToJson(this);
 }

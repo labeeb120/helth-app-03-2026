@@ -39,3 +39,21 @@ Map<String, dynamic> _$EmergencyResponseToJson(EmergencyResponse instance) =>
       'chronicDiseases': instance.chronicDiseases,
       'currentMedications': instance.currentMedications,
     };
+
+EmergencyPageResponse _$EmergencyPageResponseFromJson(
+  Map<String, dynamic> json,
+) => EmergencyPageResponse(
+  success: json['success'] as bool? ?? false,
+  message: json['message'] as String? ?? '',
+  emergencyInfo: EmergencyResponse.fromJson(
+    json['emergencyInfo'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$EmergencyPageResponseToJson(
+  EmergencyPageResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'emergencyInfo': instance.emergencyInfo.toJson(),
+};

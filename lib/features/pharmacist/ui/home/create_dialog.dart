@@ -51,7 +51,7 @@ class CreatePrescriptionPage extends ConsumerWidget {
         AppDialog().show(
           type: DialogType.error,
           title: 'Form is not valid ',
-          message: validation + formState.toString(),
+          message: validation,
         );
         return;
       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_app/auth_state.dart';
 import 'package:health_app/core/services/storage.dart';
 import 'package:health_app/shared/ex.dart';
 // import 'package:health_app/core/constants/_all.dart';
@@ -68,6 +69,13 @@ class _InitializeProfilePageState extends ConsumerState<InitializeProfilePage> {
           icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () => _goBack(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () =>
+                ref.read(authRecordStateProvider.notifier).logOut(),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(

@@ -7,6 +7,13 @@ abstract class BaseResponse {
   final String? message;
   // final List<String>? errors;
 
+  bool get wasSuccesfull {
+    if (success != null) {
+      return success!;
+    }
+    return false;
+  }
+
   BaseResponse({this.success = false, this.message = ''});
 }
 

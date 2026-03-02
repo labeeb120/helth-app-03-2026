@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_app/core/constants/k.dart';
-import 'package:health_app/core/error/app_error.dart' show ErrorOr, ServerError;
 import 'package:health_app/core/services/storage.dart';
 import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/data/requests/doctor.dart';
@@ -24,12 +21,11 @@ import 'package:health_app/features/auth/domain/models/patient.dart'
     show Patient, Doctor, Pharmacist;
 import 'package:health_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:health_app/features/doctor/data/requests/home.dart'
-    show HomeResponse, RecentPatient;
+    show RecentPatient;
 import 'package:health_app/features/doctor/data/responses/insights.dart';
 import 'package:health_app/features/pharmacist/data/requests/profile.dart';
 import 'package:health_app/features/pharmacist/data/responses/drugs_interaction.dart';
 import 'package:health_app/features/pharmacist/data/responses/prescription.dart';
-import 'package:health_app/features/pharmacist/domain/models/prescription.dart';
 import 'package:health_app/shared/api/api_service.dart' show ApiService;
 import 'package:health_app/shared/ex.dart';
 
@@ -194,7 +190,7 @@ class AppRepositories {
       final res = await api.logout();
       // final
       await storage.clearAllAccounts();
-      return ErrorOr.success(data: res['success'] ?? false);
+      return ErrorOr.success(data: res ?? false);
     } catch (e) {
       debugPrint('Logout error: $e');
       await storage.clearAllAccounts();
@@ -275,13 +271,15 @@ class AppRepositories {
   Future<void> _getPatientProfile() async {
     try {
       final json = await api.getPatientProfile();
-      // json.log('patient   dddd');
-      // for (var s in json.entries) {
-      //   s.log('e');
-      // }
-      // xlog(json);
 
       final res = PatientProfileResponse.fromJson(json);
+      final id = res.patient?.userId;
+      if (id != null) {
+        await appStorage.setBool(
+          isInitializedKey(id),
+          res.patient?.isProfileInitialized ?? false,
+        );
+      }
 
       res.patient?.toJson().log('res ');
 
@@ -560,7 +558,8 @@ class AppRepositories {
 
   Future<ErrorOr<Map<String, dynamic>>> getEmergencyScreen() async {
     try {
-      final res = await api.getEmergencyScreen();
+      final res = await api.getPatientEmergencyScreen();
+
       return ErrorOr.success(data: res);
     } catch (e) {
       debugPrint('Get emergency screen error: $e');

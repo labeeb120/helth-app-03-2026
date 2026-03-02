@@ -48,7 +48,7 @@ final class PProfileProvider
   }
 }
 
-String _$pProfileHash() => r'0d826e1379546223f73004b1c2eac7c614c38cac';
+String _$pProfileHash() => r'5cc6a047ec79a5bb1ee9ec00f2605770e27179f9';
 
 abstract class _$PProfile extends $Notifier<PatientProfileState> {
   PatientProfileState build();
@@ -219,3 +219,43 @@ final class ProfileProvider
 }
 
 String _$profileHash() => r'd0fa6752bf30d04dffa919825c5df3eaa060c178';
+
+@ProviderFor(isInitialized)
+const isInitializedProvider = IsInitializedProvider._();
+
+final class IsInitializedProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  const IsInitializedProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isInitializedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$isInitializedHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return isInitialized(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$isInitializedHash() => r'12c62ab08d7a2e527dfd6be1758aad24f785e008';
