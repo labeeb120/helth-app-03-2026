@@ -613,6 +613,30 @@
   "reset": "إعادة تعيين",
   "@reset": {
     "description": "نص زر إعادة تعيين التصفية"
-  }
-
+  },
+  "healthStats": "الإحصائيات الصحية",
+  "steps": "الخطوات",
+  "calories": "السعرات الحرارية",
+  "heartRate": "نبض القلب",
+  "sleep": "النوم",
+  "water": "الماء",
+  "hours": "ساعات",
+  "liters": "لتر",
+  "recentActivities": "الأنشطة الأخيرة",
+  "healthTips": "نصائح صحية",
+  "stayHydrated": "حافظ على رطوبتك",
+  "drinkWaterTip": "اشرب ما لا يقل عن 8 أكواب من الماء يوميًا للحفاظ على وظائف الجسم المثالية",
+  "morningRun": "جري صباحي",
+  "lunchWorkout": "تمرين الغداء",
+  "eveningWalk": "مشي مسائي",
+  "meditation": "تأمل",
+  "goodMorning": "صباح الخير",
+  "goodAfternoon": "مساء الخير",
+  "goodEvening": "مساء الخير",
+  "stats": "الإحصائيات",
+  "workout": "التمارين",
+  "chooseLicense": "اختر وثيقة التصريح",
+  "changeDocument": "تغيير الوثيقة",
+  "licenseDocument": "وثيقة التصريح",
+  "acceptedFormats": "التنسيقات المقبولة: PDF, JPG, PNG, DOC (بحد أقصى 10 ميجابايت)"
 }

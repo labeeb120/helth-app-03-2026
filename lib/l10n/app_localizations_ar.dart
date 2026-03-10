@@ -684,4 +684,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reset => 'إعادة تعيين';
+
+  @override
+  String get healthStats => 'الإحصائيات الصحية';
+
+  @override
+  String get steps => 'الخطوات';
+
+  @override
+  String get calories => 'السعرات الحرارية';
+
+  @override
+  String get heartRate => 'نبض القلب';
+
+  @override
+  String get sleep => 'النوم';
+
+  @override
+  String get water => 'الماء';
+
+  @override
+  String get hours => 'ساعات';
+
+  @override
+  String get liters => 'لتر';
+
+  @override
+  String get recentActivities => 'الأنشطة الأخيرة';
+
+  @override
+  String get healthTips => 'نصائح صحية';
+
+  @override
+  String get stayHydrated => 'حافظ على رطوبتك';
+
+  @override
+  String get drinkWaterTip =>
+      'اشرب ما لا يقل عن 8 أكواب من الماء يوميًا للحفاظ على وظائف الجسم المثالية';
+
+  @override
+  String get morningRun => 'جري صباحي';
+
+  @override
+  String get lunchWorkout => 'تمرين الغداء';
+
+  @override
+  String get eveningWalk => 'مشي مسائي';
+
+  @override
+  String get meditation => 'تأمل';
+
+  @override
+  String get goodMorning => 'صباح الخير';
+
+  @override
+  String get goodAfternoon => 'مساء الخير';
+
+  @override
+  String get goodEvening => 'مساء الخير';
+
+  @override
+  String get stats => 'الإحصائيات';
+
+  @override
+  String get workout => 'التمارين';
+
+  @override
+  String get chooseLicense => 'اختر وثيقة التصريح';
+
+  @override
+  String get changeDocument => 'تغيير الوثيقة';
+
+  @override
+  String get licenseDocument => 'وثيقة التصريح';
+
+  @override
+  String get acceptedFormats =>
+      'التنسيقات المقبولة: PDF, JPG, PNG, DOC (بحد أقصى 10 ميجابايت)';
 }

@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DoctorRegisterRequest {
 
- String get nationalId; String get password; String get confirmPassword; String get fullName;// required DateTime dateOfBirth,
- String get email; String get phoneNumber; String get licenseNumber; String get specialization; String get hospital; String? get licenseDocument;
+ String get nationalId; String get password; String get confirmPassword; String get fullName; String get email; String get phoneNumber; String get licenseNumber; String get specialization; String get hospital; String? get licenseDocument;
 /// Create a copy of DoctorRegisterRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -226,7 +225,6 @@ class _DoctorRegisterRequest implements DoctorRegisterRequest {
 @override final  String password;
 @override final  String confirmPassword;
 @override final  String fullName;
-// required DateTime dateOfBirth,
 @override final  String email;
 @override final  String phoneNumber;
 @override final  String licenseNumber;

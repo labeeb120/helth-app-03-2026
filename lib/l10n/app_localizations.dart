@@ -1441,6 +1441,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
+
+  /// No description provided for @healthStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Stats'**
+  String get healthStats;
+
+  /// No description provided for @steps.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps'**
+  String get steps;
+
+  /// No description provided for @calories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get calories;
+
+  /// No description provided for @heartRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Rate'**
+  String get heartRate;
+
+  /// No description provided for @sleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get sleep;
+
+  /// No description provided for @water.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get water;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get hours;
+
+  /// No description provided for @liters.
+  ///
+  /// In en, this message translates to:
+  /// **'L'**
+  String get liters;
+
+  /// No description provided for @recentActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activities'**
+  String get recentActivities;
+
+  /// No description provided for @healthTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Tips'**
+  String get healthTips;
+
+  /// No description provided for @stayHydrated.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay Hydrated'**
+  String get stayHydrated;
+
+  /// No description provided for @drinkWaterTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink at least 8 glasses of water daily to maintain optimal body function'**
+  String get drinkWaterTip;
+
+  /// No description provided for @morningRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning Run'**
+  String get morningRun;
+
+  /// No description provided for @lunchWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch Workout'**
+  String get lunchWorkout;
+
+  /// No description provided for @eveningWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening Walk'**
+  String get eveningWalk;
+
+  /// No description provided for @meditation.
+  ///
+  /// In en, this message translates to:
+  /// **'Meditation'**
+  String get meditation;
+
+  /// No description provided for @goodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning'**
+  String get goodMorning;
+
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Afternoon'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Evening'**
+  String get goodEvening;
+
+  /// No description provided for @stats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get stats;
+
+  /// No description provided for @workout.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get workout;
+
+  /// No description provided for @chooseLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose License Document'**
+  String get chooseLicense;
+
+  /// No description provided for @changeDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Document'**
+  String get changeDocument;
+
+  /// No description provided for @licenseDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'License Document'**
+  String get licenseDocument;
+
+  /// No description provided for @acceptedFormats.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted formats: PDF, JPG, PNG, DOC (Max 10MB)'**
+  String get acceptedFormats;
 }
 
 class _AppLocalizationsDelegate

@@ -687,4 +687,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset => 'Reset';
+
+  @override
+  String get healthStats => 'Health Stats';
+
+  @override
+  String get steps => 'Steps';
+
+  @override
+  String get calories => 'Calories';
+
+  @override
+  String get heartRate => 'Heart Rate';
+
+  @override
+  String get sleep => 'Sleep';
+
+  @override
+  String get water => 'Water';
+
+  @override
+  String get hours => 'hours';
+
+  @override
+  String get liters => 'L';
+
+  @override
+  String get recentActivities => 'Recent Activities';
+
+  @override
+  String get healthTips => 'Health Tips';
+
+  @override
+  String get stayHydrated => 'Stay Hydrated';
+
+  @override
+  String get drinkWaterTip =>
+      'Drink at least 8 glasses of water daily to maintain optimal body function';
+
+  @override
+  String get morningRun => 'Morning Run';
+
+  @override
+  String get lunchWorkout => 'Lunch Workout';
+
+  @override
+  String get eveningWalk => 'Evening Walk';
+
+  @override
+  String get meditation => 'Meditation';
+
+  @override
+  String get goodMorning => 'Good Morning';
+
+  @override
+  String get goodAfternoon => 'Good Afternoon';
+
+  @override
+  String get goodEvening => 'Good Evening';
+
+  @override
+  String get stats => 'Stats';
+
+  @override
+  String get workout => 'Workout';
+
+  @override
+  String get chooseLicense => 'Choose License Document';
+
+  @override
+  String get changeDocument => 'Change Document';
+
+  @override
+  String get licenseDocument => 'License Document';
+
+  @override
+  String get acceptedFormats =>
+      'Accepted formats: PDF, JPG, PNG, DOC (Max 10MB)';
 }

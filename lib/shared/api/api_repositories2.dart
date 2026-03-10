@@ -250,7 +250,13 @@ class AppRepositories {
     DoctorRegisterRequest data,
   ) async {
     try {
-      final res = await api.registerDoctor(FormData.fromMap(data.toJson()));
+      final map = data.toJson();
+      if (data.licenseDocument != null) {
+        map['licenseDocument'] = await MultipartFile.fromFile(
+          data.licenseDocument!,
+        );
+      }
+      final res = await api.registerDoctor(FormData.fromMap(map));
       final res2 = GeneralResponse.fromJson(res);
       if (res2.success.isN()) {
         return ErrorOr.success(data: res2);
@@ -266,7 +272,13 @@ class AppRepositories {
     PharmacistRegisterRequest data,
   ) async {
     try {
-      final res = await api.registerPharmacist(FormData.fromMap(data.toJson()));
+      final map = data.toJson();
+      if (data.licenseDocument != null) {
+        map['licenseDocument'] = await MultipartFile.fromFile(
+          data.licenseDocument!,
+        );
+      }
+      final res = await api.registerPharmacist(FormData.fromMap(map));
       final res2 = GeneralResponse.fromJson(res);
 
       if (res2.success.isN()) {
