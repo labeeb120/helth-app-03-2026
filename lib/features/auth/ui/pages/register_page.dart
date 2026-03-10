@@ -184,8 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
       licenseNumber: licenseNumberController.text,
       specialization: specializationController.text,
       hospital: hospitalController.text,
-      // dateOfBirth: DateTime.parse(_dateOfBirthController.text),
-      // licenseDocumentUrl: licenseDocumentUrlController.text,
+      licenseDocument: _selectedLicenseFile?.path,
     );
 
     return await appRepo.registerDoctor(data);
@@ -201,11 +200,9 @@ class _RegisterPageState extends State<RegisterPage> {
       phoneNumber: _phoneController.text,
       email: _emailController.text,
       licenseNumber: licenseNumberController.text,
-      // licenseDocument:
-      //     _selectedLicenseFile?.path ?? licenseDocumentUrlController.text,
+      licenseDocument: _selectedLicenseFile?.path,
       pharmacyName: pharmacyNameController.text,
     );
-    // xlog(_selectedLicenseFile?.path ?? '');
 
     return await appRepo.registerPharmacist(data);
   }

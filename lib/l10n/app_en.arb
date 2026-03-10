@@ -1131,5 +1131,30 @@
   "reset": "Reset",
   "@reset": {
     "description": "Button text to reset filters"
-  }
+  },
+  "healthStats": "Health Stats",
+  "steps": "Steps",
+  "calories": "Calories",
+  "heartRate": "Heart Rate",
+  "sleep": "Sleep",
+  "water": "Water",
+  "hours": "hours",
+  "liters": "L",
+  "recentActivities": "Recent Activities",
+  "healthTips": "Health Tips",
+  "stayHydrated": "Stay Hydrated",
+  "drinkWaterTip": "Drink at least 8 glasses of water daily to maintain optimal body function",
+  "morningRun": "Morning Run",
+  "lunchWorkout": "Lunch Workout",
+  "eveningWalk": "Evening Walk",
+  "meditation": "Meditation",
+  "goodMorning": "Good Morning",
+  "goodAfternoon": "Good Afternoon",
+  "goodEvening": "Good Evening",
+  "stats": "Stats",
+  "workout": "Workout",
+  "chooseLicense": "Choose License Document",
+  "changeDocument": "Change Document",
+  "licenseDocument": "License Document",
+  "acceptedFormats": "Accepted formats: PDF, JPG, PNG, DOC (Max 10MB)"
 }

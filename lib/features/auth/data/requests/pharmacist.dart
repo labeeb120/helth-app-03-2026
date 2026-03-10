@@ -14,7 +14,7 @@ abstract class PharmacistRegisterRequest with _$PharmacistRegisterRequest {
     required String email,
     required String licenseNumber,
     required String pharmacyName,
-    // required String   licenseDocument,
+    String? licenseDocument,
   }) = _PharmacistRegisterRequest;
 
   factory PharmacistRegisterRequest.fromJson(Map<String, dynamic> json) =>

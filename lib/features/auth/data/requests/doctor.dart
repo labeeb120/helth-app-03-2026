@@ -4,22 +4,11 @@ part 'doctor.g.dart';
 
 @freezed
 abstract class DoctorRegisterRequest with _$DoctorRegisterRequest {
-  //   "nationalId": "string",
-  // "password": "string",
-  // "confirmPassword": "string",
-  // "fullName": "string",
-  // "email": "string",
-  // "phoneNumber": "string",
-  // "licenseNumber": "string",
-  // "specialization": "string",
-  // "hospital": "string"
-  // "licenseDocumentUrl": "string",
   const factory DoctorRegisterRequest({
     required String nationalId,
     required String password,
     required String confirmPassword,
     required String fullName,
-    // required DateTime dateOfBirth,
     required String email,
     required String phoneNumber,
     required String licenseNumber,

@@ -6,13 +6,13 @@ import 'package:health_app/di.dart';
 import 'package:health_app/features/auth/domain/models/account.dart';
 import 'package:health_app/features/home/ui/pages/initialize_profile/p.dart';
 import 'package:health_app/features/home/ui/pages/initialize_profile/page.dart';
-import 'package:health_app/features/home/ui/pages/initialize_profile/page2.dart';
 import 'package:health_app/features/home/ui/pages/qr.dart';
-import 'package:health_app/shared/api/api_repositories.dart';
 import 'package:health_app/shared/ex.dart';
 import 'package:health_app/shared/widgets/dialog/app_dialog2.dart';
 import './profile.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:health_app/features/patients/ui/home.dart' show MedicalHistoryPage;
+import 'package:health_app/features/pharmacist/domain/models/prescription.dart' as model;
 
 // medicalrec
 // emergency
@@ -31,20 +31,7 @@ class MainPatientPage extends ConsumerWidget {
   }
 }
 
-class InitializedProfilePage2 extends ConsumerWidget {
-  const InitializedProfilePage2({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ac = ref.watch(accountProvider);
-    final patient = ac.whenOrNull(
-      acount: (account) => account.whenOrNull(patient: (p) => p),
-    );
-    xlog(patient);
-
-    return InitializeProfilePage2();
-  }
-}
+// Removed duplicate class
 
 class EmergenciesScreen extends ConsumerStatefulWidget {
   const EmergenciesScreen({super.key});
@@ -102,12 +89,8 @@ class _HomePageState extends State<HomePage> {
         controller: _pageController,
         children: [
           MyHomePage(),
-          InitializedProfilePage2(),
-          Consumer(
-            builder: (context, ref, child) {
-              return Scaffold(appBar: AppBar(title: Text('Prescriptions')));
-            },
-          ),
+          MedicalHistoryPage(),
+          const PatientPrescriptionsPage(),
           ProfilePage(),
         ],
       ),
@@ -126,6 +109,7 @@ class _HomePageState extends State<HomePage> {
 
           final res = await appRepo.generateQr();
           AppDialog().dismiss();
+          if (!context.mounted) return;
 
           showDialog(
             context: context,
@@ -180,67 +164,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showAddDataDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Add Health Data'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildAddDataField('Steps', 'steps', Icons.directions_walk),
-                _buildAddDataField('Heart Rate', 'heartRate', Icons.favorite),
-                _buildAddDataField(
-                  'Sleep (hours)',
-                  'sleep',
-                  Icons.nightlight_round,
-                ),
-                _buildAddDataField('Water (L)', 'water', Icons.local_drink),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Save data logic here
-                Navigator.pop(context);
-              },
-              child: Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildAddDataField(String label, String key, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) {
-          if (value.isNotEmpty) {
-            setState(() {
-              healthData[key] = double.parse(value);
-            });
-          }
-        },
-      ),
-    );
-  }
 
   Widget _buildBottomNavBar() {
+    final tr = context.tr;
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       notchMargin: 8,
@@ -249,11 +175,11 @@ class _HomePageState extends State<HomePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(Icons.home, 'Home', 0),
-            _buildNavItem(Icons.bar_chart, 'Stats', 1),
-            SizedBox(width: 40), // Space for FAB
-            _buildNavItem(Icons.fitness_center, 'Workout', 2),
-            _buildNavItem(Icons.person, 'Profile', 3),
+            _buildNavItem(Icons.home, tr.home, 0),
+          _buildNavItem(Icons.bar_chart, tr.medicalHistory, 1),
+          const SizedBox(width: 40), // Space for FAB
+          _buildNavItem(Icons.medication, tr.prescriptions, 2),
+            _buildNavItem(Icons.person, tr.profile, 3),
           ],
         ),
       ),
@@ -262,11 +188,16 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildNavItem(IconData icon, String label, int index) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         setState(() {
           _selectedIndex = index;
         });
-        _pageController.jumpToPage(index);
+        _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -274,18 +205,18 @@ class _HomePageState extends State<HomePage> {
           Icon(
             icon,
             color: _selectedIndex == index
-                ? Color(0xFF4A6FFF)
-                : Color(0xFF8A8A8A),
+                ? const Color(0xFF4A6FFF)
+                : const Color(0xFF8A8A8A),
             size: 28,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
               color: _selectedIndex == index
-                  ? Color(0xFF4A6FFF)
-                  : Color(0xFF8A8A8A),
+                  ? const Color(0xFF4A6FFF)
+                  : const Color(0xFF8A8A8A),
             ),
           ),
         ],
@@ -294,40 +225,75 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class PatientPrescriptionsPage extends ConsumerWidget {
+  const PatientPrescriptionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tr = context.tr;
+    return Scaffold(
+      appBar: AppBar(title: Text(tr.prescriptions)),
+      body: FutureBuilder<ErrorOr<List<dynamic>>>(
+        future: appRepo.getPatientPrescriptions(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(child: Text(tr.retry));
+          }
+
+          return snapshot.data!.when(
+            success: (data) {
+              final prescriptions =
+                  data.map((e) => model.Prescription.fromJson(e)).toList();
+              if (prescriptions.isEmpty) {
+                return Center(child: Text(tr.noMedicineScheduled));
+              }
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: prescriptions.length,
+                itemBuilder: (context, index) {
+                  final p = prescriptions[index];
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: ListTile(
+                      title: Text(p.doctorName),
+                      subtitle: Text(p.diagnosis),
+                      trailing: Text(p.getStatusString()),
+                    ),
+                  );
+                },
+              );
+            },
+            error: (e) => Center(child: Text(e.msg)),
+          );
+        },
+      ),
+    );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  List<Map<String, dynamic>> recentActivities = [
-    {'time': '08:30 AM', 'activity': 'Morning Run', 'duration': '30 min'},
-    {'time': '12:00 PM', 'activity': 'Lunch Workout', 'duration': '20 min'},
-    {'time': '06:00 PM', 'activity': 'Evening Walk', 'duration': '45 min'},
-    {'time': '10:00 PM', 'activity': 'Meditation', 'duration': '15 min'},
-  ];
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   Map<String, dynamic> healthData = {
     'steps': 8423,
     'calories': 420,
     'heartRate': 72,
     'sleep': 7.2,
     'water': 1.8,
-    'weight': 68.5,
   };
 
   @override
   Widget build(BuildContext context) {
+    final patientProfile = ref.watch(profileProvider);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -341,15 +307,15 @@ class _MyHomePageState extends State<MyHomePage> {
               _buildGreeting(),
 
               // Health Stats Cards
-              _buildHealthStats(),
+              _buildHealthStats(patientProfile),
 
               // Recent Activities
-              _buildRecentActivities(),
+              _buildRecentMedicalRecords(),
 
               // Health Tips
               _buildHealthTips(),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -375,21 +341,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return months[month - 1];
   }
 
-  // Helper functions
-  IconData _getActivityIcon(String activity) {
-    switch (activity) {
-      case 'Morning Run':
-        return Icons.directions_run;
-      case 'Lunch Workout':
-        return Icons.fitness_center;
-      case 'Evening Walk':
-        return Icons.directions_walk;
-      case 'Meditation':
-        return Icons.self_improvement;
-      default:
-        return Icons.sports;
-    }
-  }
 
   Widget _buildStatItem({
     required IconData icon,
@@ -405,9 +356,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 24),
@@ -439,16 +390,17 @@ class _MyHomePageState extends State<MyHomePage> {
           percent: progress,
           center: Text(
             '${(progress * 100).toInt()}%',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
           progressColor: color,
-          backgroundColor: color.withOpacity(0.1),
+          backgroundColor: color.withValues(alpha: 0.1),
         ),
       ],
     );
   }
 
-  Widget _buildRecentActivities() {
+  Widget _buildRecentMedicalRecords() {
+    final tr = context.tr;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
@@ -458,18 +410,21 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Recent Activities',
+                tr.medicalRecord,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF2D2D2D),
+                  color: const Color(0xFF2D2D2D),
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Access _pageController from the parent HomePage state
+                  // This is a simplified workaround
+                },
                 child: Text(
-                  'View All',
-                  style: TextStyle(
+                  tr.viewAll,
+                  style: const TextStyle(
                     color: Color(0xFF4A6FFF),
                     fontWeight: FontWeight.w600,
                   ),
@@ -477,71 +432,104 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ),
-          SizedBox(height: 12),
-          ...recentActivities.map((activity) => _buildActivityItem(activity)),
+          const SizedBox(height: 12),
+          FutureBuilder<ErrorOr<List<dynamic>>>(
+            future: appRepo.getPatientMedicalRecords(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError || !snapshot.hasData) {
+                return Center(child: Text(tr.noMedicalHistory));
+              }
+
+              return snapshot.data!.when(
+                success: (data) {
+                  if (data.isEmpty) {
+                    return Center(child: Text(tr.noMedicalHistory));
+                  }
+                  final records = data.take(3).toList();
+                  return Column(
+                    children:
+                        records.map((record) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                      0xFF4A6FFF,
+                                    ).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Icon(
+                                    Icons.medical_services,
+                                    color: Color(0xFF4A6FFF),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        record['diagnosis'] ?? 'Diagnosis',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF2D2D2D),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        record['doctorName'] ?? 'Doctor',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0xFF8A8A8A),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  (record['recordDate'] as String).split('T')[0],
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF4A6FFF),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                  );
+                },
+                error: (e) => Center(child: Text(e.msg)),
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildActivityItem(Map<String, dynamic> activity) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Color(0xFF4A6FFF).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              _getActivityIcon(activity['activity']),
-              color: Color(0xFF4A6FFF),
-            ),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  activity['activity'],
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF2D2D2D),
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  activity['time'],
-                  style: TextStyle(fontSize: 14, color: Color(0xFF8A8A8A)),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            activity['duration'],
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF4A6FFF),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildAppBar() {
     return Padding(
@@ -568,30 +556,57 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildGreeting() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Good Morning, Alex!',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF2D2D2D),
-            ),
+    return Consumer(
+      builder: (context, ref, child) {
+        final tr = context.tr;
+        final auth = ref.watch(accountProvider);
+        String name = 'User';
+        auth.when(
+          initial: () {},
+          acount: (account) {
+            account.whenOrNull(
+              patient: (patient) {
+                name = patient.fullName;
+              },
+            );
+          },
+        );
+
+        String greetingPrefix = tr.goodMorning;
+        final hour = DateTime.now().hour;
+        if (hour >= 12 && hour < 17) {
+          greetingPrefix = tr.goodAfternoon;
+        } else if (hour >= 17) {
+          greetingPrefix = tr.goodEvening;
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$greetingPrefix, $name!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF2D2D2D),
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                '${DateTime.now().day} ${_getMonthName(DateTime.now().month)} ${DateTime.now().year}',
+                style: TextStyle(fontSize: 14, color: Color(0xFF8A8A8A)),
+              ),
+            ],
           ),
-          SizedBox(height: 4),
-          Text(
-            '${DateTime.now().day} ${_getMonthName(DateTime.now().month)} ${DateTime.now().year}',
-            style: TextStyle(fontSize: 14, color: Color(0xFF8A8A8A)),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildHealthStats() {
+  Widget _buildHealthStats(dynamic profile) {
+    final tr = context.tr;
     return Container(
       margin: EdgeInsets.all(20),
       padding: EdgeInsets.all(16),
@@ -608,47 +623,40 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       child: Column(
         children: [
-          // Steps
           _buildStatItem(
-            icon: Icons.directions_walk,
-            title: 'Steps',
-            value: '${healthData['steps']}',
-            target: 10000,
+            icon: Icons.monitor_weight,
+            title: tr.weight,
+            value: profile.weight > 0 ? '${profile.weight}' : '--',
+            target: 100,
             color: Color(0xFF4A6FFF),
-            unit: 'steps',
+            unit: tr.weightUnit,
           ),
           SizedBox(height: 16),
-
-          // Heart Rate
           _buildStatItem(
-            icon: Icons.favorite,
-            title: 'Heart Rate',
-            value: '${healthData['heartRate']}',
-            target: 80,
+            icon: Icons.height,
+            title: tr.height,
+            value: profile.height > 0 ? '${profile.height}' : '--',
+            target: 200,
             color: Color(0xFFFF6B6B),
-            unit: 'bpm',
+            unit: tr.heightUnit,
           ),
           SizedBox(height: 16),
-
-          // Sleep
           _buildStatItem(
             icon: Icons.nightlight_round,
-            title: 'Sleep',
+            title: tr.sleep,
             value: '${healthData['sleep']}',
             target: 8,
             color: Color(0xFF9B51E0),
-            unit: 'hours',
+            unit: tr.hours,
           ),
           SizedBox(height: 16),
-
-          // Water
           _buildStatItem(
             icon: Icons.local_drink,
-            title: 'Water',
+            title: tr.water,
             value: '${healthData['water']}',
             target: 2.5,
             color: Color(0xFF2D9CDB),
-            unit: 'L',
+            unit: tr.liters,
           ),
         ],
       ),
@@ -656,13 +664,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildHealthTips() {
+    final tr = context.tr;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Health Tips',
+            tr.healthTips,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -687,7 +696,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Stay Hydrated',
+                        tr.stayHydrated,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -696,10 +705,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Drink at least 8 glasses of water daily to maintain optimal body function',
+                        tr.drinkWaterTip,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                     ],
@@ -710,10 +719,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(40),
                   ),
-                  child: Icon(Icons.local_drink, color: Colors.white, size: 40),
+                  child: const Icon(Icons.local_drink, color: Colors.white, size: 40),
                 ),
               ],
             ),
